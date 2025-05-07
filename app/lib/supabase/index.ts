@@ -1,3 +1,2 @@
-export * from "./apiResponse";
 export * from "./flashcard";
 export * from "./folder";
