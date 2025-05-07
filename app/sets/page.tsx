@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import FolderList from "../components/folder/FolderList";
+import { AppShell, Header } from "../components/layout";
 import { Folder } from "../interfaces";
 import { FolderService } from "../services/folderService";
 import { useFolderStore } from "../store";
@@ -21,9 +22,10 @@ const page = () => {
   }, []);
 
   return (
-    <div>
+    <AppShell>
+      <Header>Flashcard Sets</Header>
       <FolderList folders={folders} />
-    </div>
+    </AppShell>
   );
 };
 

@@ -7,7 +7,7 @@ const FolderCard = ({ folder }: { folder: Folder }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/sets/${folder.id}`);
+    router.push(`${window.location.pathname}/${folder.id}`);
   };
 
   return (
