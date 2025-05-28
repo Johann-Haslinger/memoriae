@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
+import Tooltip from "./Tooltip";
 
 interface FolderIconPickerProps {
   iconOptions: string[];
-  selectedIcon: string | undefined;
+  selectedIcon: string;
   onSelect: (icon: string) => void;
   show: boolean;
   setShow: (show: boolean) => void;
-  coverImage: string | undefined;
+  coverImage?: string;
 }
 
 const ICON_SIZE_PX = 60;
@@ -45,28 +46,29 @@ const FolderIconPicker: React.FC<FolderIconPickerProps> = ({
       className={hasCover ? "mb-2 relative" : "mt-10 mb-2"}
       style={hasCover ? {} : undefined}
     >
-      <button
-        className={
-          "text-7xl focus:outline-none hover:scale-110 transition-transform" +
-          (hasCover ? "" : " mb-2")
-        }
-        title="Change icon"
-        onClick={() => setShow(!show)}
-        style={
-          hasCover
-            ? {
-                position: "relative",
-                bottom: iconBottomOffset,
-                marginTop: 0,
-                marginBottom: -iconBottomOffset,
-                left: 40,
-                zIndex: 10,
-              }
-            : undefined
-        }
-      >
-        {selectedIcon || "📁"}
-      </button>
+      <Tooltip id="change-icon-tooltip" content="Change folder icon">
+        <button
+          className={
+            "text-7xl focus:outline-none hover:scale-110 transition-transform" +
+            (hasCover ? "" : " mb-2")
+          }
+          onClick={() => setShow(!show)}
+          style={
+            hasCover
+              ? {
+                  position: "relative",
+                  bottom: iconBottomOffset,
+                  marginTop: 0,
+                  marginBottom: -iconBottomOffset,
+                  left: 40,
+                  zIndex: 10,
+                }
+              : undefined
+          }
+        >
+          {selectedIcon || "📁"}
+        </button>
+      </Tooltip>
       {show && (
         <div
           ref={menuRef}
@@ -74,18 +76,23 @@ const FolderIconPicker: React.FC<FolderIconPickerProps> = ({
         >
           <div className="grid grid-cols-4 gap-2">
             {iconOptions.map((icon) => (
-              <button
+              <Tooltip
                 key={icon}
-                className={`text-2xl p-1 rounded hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors ${
-                  selectedIcon === icon ? "ring-2 ring-white" : ""
-                }`}
-                onClick={() => {
-                  onSelect(icon);
-                  setShow(false);
-                }}
+                id={`icon-${icon}`}
+                content={`Select ${icon} icon`}
               >
-                {icon}
-              </button>
+                <button
+                  className={`text-2xl p-1 rounded hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors ${
+                    selectedIcon === icon ? "ring-2 ring-white" : ""
+                  }`}
+                  onClick={() => {
+                    onSelect(icon);
+                    setShow(false);
+                  }}
+                >
+                  {icon}
+                </button>
+              </Tooltip>
             ))}
           </div>
         </div>

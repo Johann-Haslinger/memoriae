@@ -1,5 +1,7 @@
-import { ArrowUp, MessageSquare, PanelRight, Plus } from "lucide-react";
+import { ArrowUp, PanelRight, Plus } from "lucide-react";
 import React, { useState } from "react";
+import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
+import Tooltip from "./Tooltip";
 
 interface Message {
   id: number;
@@ -16,12 +18,21 @@ interface ContextFolder {
 const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [selectedModel, setSelectedModel] = useState("gpt-4");
   const [isOpen, setIsOpen] = useState(true);
   const [contextFolders, setContextFolders] = useState<ContextFolder[]>([
     { id: "1", name: "src/components" },
     { id: "2", name: "src/utils" },
   ]);
+
+  // Add keyboard shortcut for toggling chat
+  useKeyboardShortcut(
+    { key: "b", meta: true, alt: true },
+    () => {
+      console.log("Chat toggle shortcut triggered");
+      setIsOpen((prev) => !prev);
+    },
+    [setIsOpen]
+  );
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,13 +51,19 @@ const ChatWindow = () => {
 
   if (!isOpen) {
     return (
-      <button
-        className="h-screen flex items-center justify-center w-10 bg-white dark:bg-white/[0.08] border-l border-slate-200 dark:border-white/[0.05] hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open chat"
+      <Tooltip
+        id="open-chat-tooltip"
+        content="Open chat"
+        shortcut={["⌘", "⌥", "B"]}
       >
-        <PanelRight className="text-slate-500 dark:text-white/60" size={22} />
-      </button>
+        <button
+          className="h-screen flex items-center justify-center w-10 bg-white dark:bg-white/[0.08] border-l border-slate-200 dark:border-white/[0.05] hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open chat"
+        >
+          <PanelRight className="text-slate-500 dark:text-white/60" size={22} />
+        </button>
+      </Tooltip>
     );
   }
 
@@ -54,13 +71,22 @@ const ChatWindow = () => {
     <aside className="w-96 h-full bg-gray-100 dark:bg-white/[0.08] border-l border-slate-200 dark:border-white/[0.05] p-4 flex flex-col text-gray-900 dark:text-gray-100">
       {/* Close button */}
       <div className="w-full flex justify-end mb-2">
-        <button
-          className="p-1.5 hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
-          onClick={() => setIsOpen(false)}
-          aria-label="Close chat"
+        <Tooltip
+          id="close-chat-tooltip"
+          content="Close chat"
+          shortcut={["⌘", "⌥", "B"]}
         >
-          <PanelRight size={22} className="text-slate-500 dark:text-white/60" />
-        </button>
+          <button
+            className="p-1.5 hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close chat"
+          >
+            <PanelRight
+              size={22}
+              className="text-slate-500 dark:text-white/60"
+            />
+          </button>
+        </Tooltip>
       </div>
 
       {/* Messages Container */}
@@ -93,13 +119,15 @@ const ChatWindow = () => {
         <div className="relative bg-white dark:bg-white/[0.03] rounded-xl border border-gray-300 dark:border-white/5">
           {/* Top Bar */}
           <div className="flex items-centers space-x-2 px-3 py-2">
-            <button
-              type="button"
-              className="dark:text-white/80 hover:text-gray-700 text-gray-400 dark:hover:text-gray-200  dark:bg-black/5 border border-white/5 rounded-md text-xs p-1 h-fit px-1.5"
-              title="Add context folder"
-            >
-              @
-            </button>
+            <Tooltip id="add-context-tooltip" content="Add context folder">
+              <button
+                type="button"
+                className="dark:text-white/80 hover:text-gray-700 text-gray-400 dark:hover:text-gray-200  dark:bg-black/5 border border-white/5 rounded-md text-xs p-1 h-fit px-1.5"
+                title="Add context folder"
+              >
+                @
+              </button>
+            </Tooltip>
 
             {/* Context Folders */}
             {contextFolders.length > 0 && (
@@ -110,16 +138,21 @@ const ChatWindow = () => {
                     className="flex dark:text-white/80 items-center gap-1 px-2 py-1 bg-gray-200 dark:bg-black/5 border border-white/5 rounded-md text-xs"
                   >
                     <span>{folder.name}</span>
-                    <button
-                      onClick={() =>
-                        setContextFolders((folders) =>
-                          folders.filter((f) => f.id !== folder.id)
-                        )
-                      }
-                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    <Tooltip
+                      id={`remove-folder-${folder.id}`}
+                      content="Remove folder"
                     >
-                      ×
-                    </button>
+                      <button
+                        onClick={() =>
+                          setContextFolders((folders) =>
+                            folders.filter((f) => f.id !== folder.id)
+                          )
+                        }
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        ×
+                      </button>
+                    </Tooltip>
                   </div>
                 ))}
               </div>
@@ -142,32 +175,23 @@ const ChatWindow = () => {
 
           {/* Bottom Bar */}
           <div className="flex items-center justify-between gap-2 px-3 py-2">
-            <div className="px-2 py-1 text-sm  bg-white/5 rounded-full text-white/60 flex items-center gap-2">
-              <MessageSquare size={14} />
-              <select
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-                className="focus:outline-none text-sm bg-transparent"
-              >
-                <option value="gpt-4">GPT-4</option>
-                <option value="gpt-3.5">GPT-3.5</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
+            <Tooltip id="add-resources-tooltip" content="Add resources">
               <button
                 type="button"
-                className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 dark:text-white/40"
+                className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 dark:text-white/50"
                 title="Add resources"
               >
-                <Plus size={20} />
+                <Plus size={22} />
               </button>
+            </Tooltip>
+
+            <Tooltip id="send-message-tooltip" content="Send message">
               <button
                 type="submit"
                 className={`
                   size-7 rounded-full flex items-center justify-center
                   bg-blue-500 text-white
-                  dark:bg-white/15 dark:text-black/70
+                  dark:bg-white/20 dark:text-black/70
                   hover:opacity-90 active:opacity-70
                   hover:bg-blue-600 dark:hover:bg-white
                   focus:outline-none focus:ring-2 focus:ring-blue-500
@@ -176,7 +200,7 @@ const ChatWindow = () => {
               >
                 <ArrowUp size={20} />
               </button>
-            </div>
+            </Tooltip>
           </div>
         </div>
       </form>

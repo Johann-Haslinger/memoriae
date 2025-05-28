@@ -5,6 +5,7 @@ import Breadcrumb from "./Breadcrumb";
 import FolderCoverImage from "./FolderCoverImage";
 import FolderIconPicker from "./FolderIconPicker";
 import NoteSection from "./NoteSection";
+import Tooltip from "./Tooltip";
 
 const MainContent = () => {
   const selectedFolderId = useFolderStore((state) => state.selectedFolderId);
@@ -98,7 +99,7 @@ const MainContent = () => {
             <FolderIconPicker
               coverImage={selectedFolder.coverImage}
               iconOptions={iconOptions}
-              selectedIcon={selectedFolder.icon}
+              selectedIcon={selectedFolder.icon || ""}
               onSelect={(icon) => updateFolder(selectedFolder.id, { icon })}
               show={showIconPicker}
               setShow={setShowIconPicker}
@@ -117,9 +118,14 @@ const MainContent = () => {
           </div>
         </>
       ) : (
-        <h1 className="text-2xl font-bold mb-4">
-          Select a folder to view its details
-        </h1>
+        <Tooltip
+          id="select-folder-tooltip"
+          content="Select a folder to view its details"
+        >
+          <h1 className="text-2xl font-bold mb-4">
+            Select a folder to view its details
+          </h1>
+        </Tooltip>
       )}
     </main>
   );

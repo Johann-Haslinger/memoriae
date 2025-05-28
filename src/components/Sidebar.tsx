@@ -6,7 +6,9 @@ import {
   PanelLeft,
 } from "lucide-react";
 import React, { useMemo, useState } from "react";
+import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import type { Folder } from "../interfaces";
+import Tooltip from "./Tooltip";
 
 import { useFolderStore } from "../store/folderStore";
 import { useFolderUIStore } from "../store/folderUIStore";
@@ -28,10 +30,14 @@ const FolderItem: React.FC<{
     <div>
       <div
         className={`flex select-none text-sm items-center gap-2 py-1.5 dark:text-white/60 px-2 rounded-lg transition-colors cursor-pointer
-          ${level === 0 ? "" : ""}
-          hover:bg-slate-100 dark:hover:bg-white/5 hover:text-white/100
-          ${isSelected ? "bg-blue-100 dark:bg-white/5 dark:text-white/100" : ""}
-        `}
+            ${level === 0 ? "" : ""}
+            hover:bg-slate-100 dark:hover:bg-white/5 hover:text-white/100
+            ${
+              isSelected
+                ? "bg-blue-100 dark:bg-white/5 dark:text-white/100"
+                : ""
+            }
+          `}
         onClick={(e) => {
           e.stopPropagation();
           setSelectedFolderId(folder.id);
@@ -39,14 +45,20 @@ const FolderItem: React.FC<{
         onDoubleClick={() => hasChildren && toggleFolder(folder.id)}
       >
         <span className="truncate flex-1">{folder.name}</span>
+
         {hasChildren ? (
-          <span className="flex items-center">
-            {isOpen ? (
-              <LucideChevronDown className="text-white/50 ml-1 w-4 h-4" />
-            ) : (
-              <LucideChevronRight className="text-white/50 ml-1 w-4 h-4" />
-            )}
-          </span>
+          <Tooltip
+            id={`open-folder-${folder.id}`}
+            content={isOpen ? "Close folder" : "Open folder"}
+          >
+            <span className="flex items-center">
+              {isOpen ? (
+                <LucideChevronDown className="text-white/50 ml-1 w-4 h-4" />
+              ) : (
+                <LucideChevronRight className="text-white/50 ml-1 w-4 h-4" />
+              )}
+            </span>
+          </Tooltip>
         ) : (
           <span className="w-4" />
         )}
@@ -81,6 +93,13 @@ const Sidebar = () => {
     (state) => state.setSelectedFolderId
   );
 
+  // Add keyboard shortcut for toggling sidebar
+  useKeyboardShortcut(
+    { key: "b", meta: true },
+    () => setOpen((prev) => !prev),
+    [setOpen]
+  );
+
   // Sidebar width for animation
   const sidebarWidth = open ? 288 : 96; // px values for w-72 and w-24
 
@@ -100,27 +119,40 @@ const Sidebar = () => {
       >
         {/* Close button (now in a flex row at the top) */}
         {open ? (
-          <div className="w-full mb-2  mb-2">
-            <button
-              className="p-1.5 hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
-              onClick={() => setOpen(false)}
-              aria-label="Close sidebar"
+          <div className="w-full flex justify-between not-only:mb-2">
+            <Tooltip
+              place="right"
+              id="close-sidebar-tooltip"
+              content="Close sidebar"
+              shortcut={["⌘", "B"]}
             >
-              <PanelLeft
-                size={22}
-                className="text-slate-500 dark:text-white/60"
-              />
-            </button>
+              <button
+                className="p-1.5 w-fit hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
+                onClick={() => setOpen(false)}
+                aria-label="Close sidebar"
+              >
+                <PanelLeft
+                  size={22}
+                  className="text-slate-500 dark:text-white/60"
+                />
+              </button>
+            </Tooltip>
           </div>
         ) : (
           // Open button inside ^im sidebar
-          <button
-            className="mb-6 flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-800 shadow-md transition-colors hover:bg-slate-100 dark:hover:bg-white/10"
-            onClick={() => setOpen(true)}
-            aria-label="Open sidebar"
+          <Tooltip
+            id="open-sidebar-tooltip"
+            content="Open sidebar"
+            shortcut={["⌘", "B"]}
           >
-            <LucideChevronRight className="text-slate-700 dark:text-slate-200" />
-          </button>
+            <button
+              className="mb-6 flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-800 shadow-md transition-colors hover:bg-slate-100 dark:hover:bg-white/10"
+              onClick={() => setOpen(true)}
+              aria-label="Open sidebar"
+            >
+              <LucideChevronRight className="text-slate-700 dark:text-slate-200" />
+            </button>
+          </Tooltip>
         )}
         {open ? (
           <>
@@ -142,22 +174,26 @@ const Sidebar = () => {
             {topLevelFolders.map((folder) => {
               const isSelected = selectedFolderId === folder.id;
               return (
-                <button
+                <Tooltip
                   key={folder.id}
-                  className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors focus:outline-none ${
-                    isSelected
-                      ? "bg-blue-100 dark:bg-white/10"
-                      : "hover:bg-slate-100 dark:hover:bg-white/10"
-                  }`}
-                  onClick={() => setSelectedFolderId(folder.id)}
-                  title={folder.name}
+                  id={`collapsed-folder-${folder.id}`}
+                  content={folder.name}
                 >
-                  {folder.type === "subject" ? (
-                    <LucideBook className="text-blue-400 w-6 h-6" />
-                  ) : (
-                    <LucideFolder className="text-yellow-400 w-6 h-6" />
-                  )}
-                </button>
+                  <button
+                    className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors focus:outline-none ${
+                      isSelected
+                        ? "bg-blue-100 dark:bg-white/10"
+                        : "hover:bg-slate-100 dark:hover:bg-white/10"
+                    }`}
+                    onClick={() => setSelectedFolderId(folder.id)}
+                  >
+                    {folder.type === "subject" ? (
+                      <LucideBook className="text-blue-400 w-6 h-6" />
+                    ) : (
+                      <LucideFolder className="text-yellow-400 w-6 h-6" />
+                    )}
+                  </button>
+                </Tooltip>
               );
             })}
           </nav>
