@@ -101,7 +101,7 @@ const Sidebar = () => {
   );
 
   // Sidebar width for animation
-  const sidebarWidth = open ? 288 : 96; // px values for w-72 and w-24
+  const sidebarWidth = open ? 288 : 60; // px values for w-72 and w-24
 
   // Only show top-level folders/subjects in collapsed state
   const topLevelFolders = tree;
@@ -109,8 +109,8 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`h-screen bg-white dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 p-2 flex flex-col border-r border-slate-200 dark:border-white/[0.05] transition-all duration-300 ease-in-out ${
-          open ? "p-4" : "items-center"
+        className={`h-screen py-4 bg-white dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 p-2 flex flex-col border-r border-slate-200 dark:border-white/[0.05] transition-all duration-300 ease-in-out ${
+          open ? "px-4" : "items-center"
         }`}
         style={{
           width: sidebarWidth,
@@ -118,42 +118,30 @@ const Sidebar = () => {
         }}
       >
         {/* Close button (now in a flex row at the top) */}
-        {open ? (
-          <div className="w-full flex justify-between not-only:mb-2">
-            <Tooltip
-              place="right"
-              id="close-sidebar-tooltip"
-              content="Close sidebar"
-              shortcut={["⌘", "B"]}
-            >
-              <button
-                className="p-1.5 w-fit hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
-                onClick={() => setOpen(false)}
-                aria-label="Close sidebar"
-              >
-                <PanelLeft
-                  size={22}
-                  className="text-slate-500 dark:text-white/60"
-                />
-              </button>
-            </Tooltip>
-          </div>
-        ) : (
-          // Open button inside ^im sidebar
+        <div
+          className={`w-full mb-2 transition-all justify-between flex ${
+            open ? "" : "pl-1"
+          }`}
+        >
           <Tooltip
-            id="open-sidebar-tooltip"
-            content="Open sidebar"
+            place="right-end"
+            id="close-sidebar-tooltip"
+            content="Close sidebar"
             shortcut={["⌘", "B"]}
           >
             <button
-              className="mb-6 flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-800 shadow-md transition-colors hover:bg-slate-100 dark:hover:bg-white/10"
-              onClick={() => setOpen(true)}
-              aria-label="Open sidebar"
+              className="p-1.5 w-fit hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
+              onClick={() => setOpen(!open)}
+              aria-label="Close sidebar"
             >
-              <LucideChevronRight className="text-slate-700 dark:text-slate-200" />
+              <PanelLeft
+                size={22}
+                className="text-slate-500 dark:text-white/60"
+              />
             </button>
           </Tooltip>
-        )}
+        </div>
+
         {open ? (
           <>
             <nav className="flex-1  mt-2 space-y-2 overflow-y-auto pr-2">
@@ -170,7 +158,7 @@ const Sidebar = () => {
           </>
         ) : (
           // Collapsed: show only icons for top-level folders/subjects
-          <nav className="flex-1 flex flex-col items-center gap-4 mt-2 overflow-y-auto">
+          <nav className="flex-1 flex flex-col items-center gap-3 mt-3 overflow-y-auto">
             {topLevelFolders.map((folder) => {
               const isSelected = selectedFolderId === folder.id;
               return (
@@ -180,7 +168,7 @@ const Sidebar = () => {
                   content={folder.name}
                 >
                   <button
-                    className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors focus:outline-none ${
+                    className={`flex items-center justify-center p-1.5 rounded-lg transition-colors focus:outline-none ${
                       isSelected
                         ? "bg-blue-100 dark:bg-white/10"
                         : "hover:bg-slate-100 dark:hover:bg-white/10"
@@ -188,7 +176,7 @@ const Sidebar = () => {
                     onClick={() => setSelectedFolderId(folder.id)}
                   >
                     {folder.type === "subject" ? (
-                      <LucideBook className="text-blue-400 w-6 h-6" />
+                      <LucideBook className="text-white/50 size-5" />
                     ) : (
                       <LucideFolder className="text-yellow-400 w-6 h-6" />
                     )}

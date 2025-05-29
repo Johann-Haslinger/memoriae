@@ -95,7 +95,7 @@ const MainContent = () => {
               updateFolder(selectedFolder.id, { coverImage })
             }
           />
-          <div className="px-6">
+          <div className="px-8">
             <FolderIconPicker
               coverImage={selectedFolder.coverImage}
               iconOptions={iconOptions}
@@ -104,7 +104,7 @@ const MainContent = () => {
               show={showIconPicker}
               setShow={setShowIconPicker}
             />
-            <h1 className="text-[33px] font-bold mt-4 mb-4">
+            <h1 className="text-4xl font-bold mt-8 text-[#FFFFFFCF]">
               {selectedFolder.name}
             </h1>
             <NoteSection

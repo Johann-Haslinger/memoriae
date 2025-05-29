@@ -9,7 +9,7 @@ const mockFolders: Folder[] = [
     note: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
     icon: "📚",
     coverImage:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2NDgwNDl8MHwxfHNlYXJjaHw3fHxNYXRofGVufDB8MHx8fDE3NDg1MDcwNTh8MA&ixlib=rb-4.1.0&q=85",
   },
   {
     id: "2",

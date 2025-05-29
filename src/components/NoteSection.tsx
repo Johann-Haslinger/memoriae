@@ -19,7 +19,7 @@ const NoteSection: React.FC<NoteSectionProps> = ({
   noteDivRef,
 }) => {
   return (
-    <div className="mt-6 opacity-80">
+    <div className="mt-4 text-[#FFFFFFCF]">
       {noteValue || editingNote ? (
         <div
           ref={noteDivRef}

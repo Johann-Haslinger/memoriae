@@ -10,7 +10,7 @@ interface FolderIconPickerProps {
   coverImage?: string;
 }
 
-const ICON_SIZE_PX = 60;
+const ICON_SIZE_PX = 72;
 
 const FolderIconPicker: React.FC<FolderIconPickerProps> = ({
   iconOptions,
@@ -43,32 +43,39 @@ const FolderIconPicker: React.FC<FolderIconPickerProps> = ({
 
   return (
     <div
-      className={hasCover ? "mb-2 relative" : "mt-10 mb-2"}
+      className={hasCover ? "relative" : "mt-10"}
       style={hasCover ? {} : undefined}
     >
-      <Tooltip id="change-icon-tooltip" content="Change folder icon">
-        <button
-          className={
-            "text-7xl focus:outline-none hover:scale-110 transition-transform" +
-            (hasCover ? "" : " mb-2")
-          }
-          onClick={() => setShow(!show)}
-          style={
-            hasCover
-              ? {
-                  position: "relative",
-                  bottom: iconBottomOffset,
-                  marginTop: 0,
-                  marginBottom: -iconBottomOffset,
-                  left: 40,
-                  zIndex: 10,
-                }
-              : undefined
-          }
+      <div
+        style={
+          hasCover
+            ? {
+                position: "relative",
+                bottom: iconBottomOffset,
+                marginTop: 0,
+                marginBottom: -iconBottomOffset,
+                zIndex: 10,
+              }
+            : undefined
+        }
+        className="w-fit"
+      >
+        <Tooltip
+          place="right"
+          id="change-icon-tooltip"
+          content="Change folder icon"
         >
-          {selectedIcon || "📁"}
-        </button>
-      </Tooltip>
+          <button
+            className={
+              "text-7xl ml-2 focus:outline-none hover:scale-110 transition-transform" +
+              (hasCover ? "" : " mb-2")
+            }
+            onClick={() => setShow(!show)}
+          >
+            {selectedIcon || "📁"}
+          </button>
+        </Tooltip>
+      </div>
       {show && (
         <div
           ref={menuRef}

@@ -10,7 +10,19 @@ interface FolderCoverImageProps {
 const UNSPLASH_ACCESS_KEY = VITE_UNSPLASH_ACCESS_KEY;
 
 interface UnsplashPhoto {
-  urls: { regular: string };
+  urls: {
+    thumb: string;
+    regular: string;
+    full: string;
+  };
+  id: string;
+}
+
+interface ImageData {
+  thumb: string;
+  regular: string;
+  full: string;
+  id: string;
 }
 
 const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
@@ -19,10 +31,10 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<ImageData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<ImageData[]>([]);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Handle click outside
@@ -50,7 +62,14 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
       );
       const data: UnsplashPhoto[] = await res.json();
       if (data) {
-        setSuggestions(data.map((img) => img.urls.regular));
+        setSuggestions(
+          data.map((img) => ({
+            thumb: img.urls.thumb,
+            regular: img.urls.regular,
+            full: img.urls.full,
+            id: img.id,
+          }))
+        );
       }
     } catch {
       // Silently fail for suggestions
@@ -73,8 +92,15 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
         `https://api.unsplash.com/photos/random?orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`
       );
       const data: UnsplashPhoto = await res.json();
-      if (data && data.urls && data.urls.regular) {
+      if (data && data.urls) {
+        // First set the regular quality
         onChangeCoverImage(data.urls.regular);
+        // Then load the full quality
+        const fullImg = new Image();
+        fullImg.src = data.urls.full;
+        fullImg.onload = () => {
+          onChangeCoverImage(data.urls.full);
+        };
       } else {
         setError("Could not fetch image");
       }
@@ -96,7 +122,14 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
       );
       const data: { results: UnsplashPhoto[] } = await res.json();
       if (data && data.results) {
-        setResults(data.results.map((img) => img.urls.regular));
+        setResults(
+          data.results.map((img) => ({
+            thumb: img.urls.thumb,
+            regular: img.urls.regular,
+            full: img.urls.full,
+            id: img.id,
+          }))
+        );
       } else {
         setResults([]);
         setError("No results");
@@ -132,24 +165,24 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
 
   // UI when cover image is present
   return (
-    <div className="relative px-6 w-full group" style={{ minHeight: 120 }}>
+    <div className="relative w-full group" style={{ minHeight: 120 }}>
       <img
         src={coverImage}
         alt="Folder cover"
-        className="w-full h-32 lg:h-60 object-cover shadow-sm rounded-xl"
+        className="w-full h-32 lg:h-60 object-cover shadow-sm"
       />
       {/* Overlay button - only visible on hover */}
-      <Tooltip id="change-cover-tooltip" content="Change cover image">
-        <button
-          className="absolute top-2 right-2 bg-[#333333]/90 dark:bg-[#222222]/90 rounded px-3 py-1 text-xs font-medium shadow hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors text-white opacity-0 group-hover:opacity-100 focus:opacity-100"
-          onClick={() => setShowMenu((v) => !v)}
-          tabIndex={0}
-          aria-label="Change cover"
-          style={{ transition: "opacity 0.2s" }}
-        >
-          Change cover
-        </button>
-      </Tooltip>
+
+      <button
+        className="absolute top-2 right-2 bg-[#333333]/90 dark:bg-[#222222]/90 rounded px-3 py-1 text-xs font-medium shadow hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors text-white opacity-0 group-hover:opacity-100 focus:opacity-100"
+        onClick={() => setShowMenu((v) => !v)}
+        tabIndex={0}
+        aria-label="Change cover"
+        style={{ transition: "opacity 0.2s" }}
+      >
+        Change cover
+      </button>
+
       {/* Menu */}
       {showMenu && (
         <div
@@ -190,27 +223,29 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                 Suggestions
               </div>
               <div className="grid grid-cols-4 gap-2 mb-3">
-                {suggestions.map((img, i) => (
-                  <Tooltip
-                    key={img + i}
-                    id={`select-image-${i}`}
-                    content="Select this image"
+                {suggestions.map((img) => (
+                  <button
+                    className="block w-full h-16 hover:scale-105 active:scale-95 transition-transform rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
+                    style={{ padding: 0 }}
+                    onClick={() => {
+                      // First set the regular quality
+                      onChangeCoverImage(img.regular);
+                      // Then load the full quality
+                      const fullImg = new Image();
+                      fullImg.src = img.full;
+                      console.log("img.full", img.full);
+                      fullImg.onload = () => {
+                        onChangeCoverImage(img.full);
+                      };
+                      setShowMenu(false);
+                    }}
                   >
-                    <button
-                      className="block w-full h-16 rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
-                      style={{ padding: 0 }}
-                      onClick={() => {
-                        onChangeCoverImage(img);
-                        setShowMenu(false);
-                      }}
-                    >
-                      <img
-                        src={img}
-                        alt="Unsplash suggestion"
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  </Tooltip>
+                    <img
+                      src={img.thumb}
+                      alt="Unsplash suggestion"
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
                 ))}
               </div>
             </>
@@ -221,20 +256,28 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
             <div className="grid grid-cols-4 gap-2">
               {results.map((img, i) => (
                 <Tooltip
-                  key={img + i}
+                  key={img.id}
                   id={`select-image-${i}`}
                   content="Select this image"
                 >
                   <button
-                    className="block w-full h-16 rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
+                    className="block w-full hover:scale-105 active:scale-95 transition-transform h-16 rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
                     style={{ padding: 0 }}
                     onClick={() => {
-                      onChangeCoverImage(img);
+                      // First set the regular quality
+                      onChangeCoverImage(img.regular);
+                      // Then load the full quality
+                      const fullImg = new Image();
+                      fullImg.src = img.full;
+                      console.log("img.full", img.full);
+                      fullImg.onload = () => {
+                        onChangeCoverImage(img.full);
+                      };
                       setShowMenu(false);
                     }}
                   >
                     <img
-                      src={img}
+                      src={img.thumb}
                       alt="Unsplash result"
                       className="w-full h-full object-cover"
                     />
