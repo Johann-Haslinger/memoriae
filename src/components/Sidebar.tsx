@@ -134,8 +134,8 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`h-screen border-r border-white/5 py-4 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
-          open ? "px-4" : "items-center"
+        className={`h-screen border-r border-white/5 py-2 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
+          open ? "px-2" : "items-center"
         }`}
         style={{
           width: sidebarWidth,
@@ -145,7 +145,7 @@ const Sidebar = () => {
         {/* Close button (now in a flex row at the top) */}
         <div
           className={`w-full mb-2 transition-all justify-between flex ${
-            open ? "" : "pl-1"
+            open ? "pl-1" : "pl-1"
           }`}
         >
           <Tooltip
@@ -171,7 +171,7 @@ const Sidebar = () => {
 
         {open ? (
           <>
-            <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-2">
+            <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-4">
               {tree.length === 0 && (
                 <div className="text-slate-400">No subjects yet.</div>
               )}

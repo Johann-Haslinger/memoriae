@@ -15,7 +15,57 @@ interface FlashcardState {
 }
 
 export const useFlashcardStore = create<FlashcardState>((set, get) => ({
-  flashcards: [],
+  flashcards: [
+    {
+      id: "fc1",
+      folderId: "2", // Calculus in Math
+      question: "What is the derivative of sin(x)?",
+      answer: "cos(x)",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "fc2",
+      folderId: "2", // Calculus in Math
+      question: "What is the integral of 1/x dx?",
+      answer: "ln|x| + C",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "fc3",
+      folderId: "2", // Calculus in Math
+      question: "State the Fundamental Theorem of Calculus.",
+      answer:
+        "It links the concept of the derivative of a function with the concept of its integral.",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "fc4",
+      folderId: "2", // Calculus in Math
+      question: "What is the derivative of x^n (where n ≠ 0)?",
+      answer: "n * x^(n-1)",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "fc5",
+      folderId: "2", // Calculus in Math
+      question: "What is the limit of (sin x)/x as x approaches 0?",
+      answer: "1",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: "fc6",
+      folderId: "2", // Calculus in Math
+      question: "What is the integral of e^x dx?",
+      answer: "e^x + C",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ],
 
   addFlashcard: (flashcard) => {
     const newFlashcard: Flashcard = {

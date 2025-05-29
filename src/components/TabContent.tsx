@@ -1,7 +1,8 @@
 import React from "react";
-import type { TabType } from "./ContentTabs";
+import Flashcards from "./Flashcards";
 import FolderGrid from "./FolderGrid";
 import NoteSection from "./NoteSection";
+import type { TabType } from "./TabBar";
 
 interface TabContentProps {
   activeTab: TabType;
@@ -40,6 +41,10 @@ const TabContent: React.FC<TabContentProps> = ({
         selectedFolderId={selectedFolderId}
       />
     );
+  }
+
+  if (activeTab === "flashcards") {
+    return <Flashcards selectedFolderId={selectedFolderId} />;
   }
 
   return null;

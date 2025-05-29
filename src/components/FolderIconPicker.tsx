@@ -83,23 +83,17 @@ const FolderIconPicker: React.FC<FolderIconPickerProps> = ({
         >
           <div className="grid grid-cols-4 gap-2">
             {iconOptions.map((icon) => (
-              <Tooltip
-                key={icon}
-                id={`icon-${icon}`}
-                content={`Select ${icon} icon`}
+              <button
+                className={`text-2xl p-1 rounded hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors ${
+                  selectedIcon === icon ? "ring-2 ring-white" : ""
+                }`}
+                onClick={() => {
+                  onSelect(icon);
+                  setShow(false);
+                }}
               >
-                <button
-                  className={`text-2xl p-1 rounded hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors ${
-                    selectedIcon === icon ? "ring-2 ring-white" : ""
-                  }`}
-                  onClick={() => {
-                    onSelect(icon);
-                    setShow(false);
-                  }}
-                >
-                  {icon}
-                </button>
-              </Tooltip>
+                {icon}
+              </button>
             ))}
           </div>
         </div>

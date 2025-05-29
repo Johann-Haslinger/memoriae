@@ -84,22 +84,22 @@ const MainContent = () => {
 
   return (
     <main className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1919] text-gray-900 dark:text-gray-100">
-      <div className="sticky top-0 pt-2 z-10 bg-white dark:bg-[#1a1919]">
+      <div className="sticky top-0 pt-3 z-10 bg-white dark:bg-[#1a1919]">
         <Breadcrumb
           breadcrumbPath={breadcrumbPath}
           setSelectedFolderId={setSelectedFolderId}
         />
       </div>
       <div className="flex-1 overflow-auto pb-40">
-        <div className="max-w-4xl mx-auto">
-          {selectedFolder ? (
-            <>
-              <FolderCoverImage
-                coverImage={selectedFolder.coverImage}
-                onChangeCoverImage={(coverImage?: string) =>
-                  updateFolder(selectedFolder.id, { coverImage })
-                }
-              />
+        {selectedFolder ? (
+          <>
+            <FolderCoverImage
+              coverImage={selectedFolder.coverImage}
+              onChangeCoverImage={(coverImage?: string) =>
+                updateFolder(selectedFolder.id, { coverImage })
+              }
+            />
+            <div className="max-w-4xl mx-auto">
               <div className="px-8">
                 <FolderIconPicker
                   coverImage={selectedFolder.coverImage}
@@ -118,6 +118,9 @@ const MainContent = () => {
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
                     selectedFolderId={selectedFolder.id}
+                    onAddFlashcard={() => {
+                      // TODO: Implement add flashcard functionality
+                    }}
                   />
                   <div className="mt-4">
                     <TabContent
@@ -133,8 +136,10 @@ const MainContent = () => {
                   </div>
                 </div>
               </div>
-            </>
-          ) : (
+            </div>
+          </>
+        ) : (
+          <div className="max-w-4xl mx-auto">
             <Tooltip
               id="select-folder-tooltip"
               content="Select a folder to view its details"
@@ -143,8 +148,8 @@ const MainContent = () => {
                 Select a folder to view its details
               </h1>
             </Tooltip>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </main>
   );

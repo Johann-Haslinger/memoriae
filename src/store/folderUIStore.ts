@@ -8,7 +8,9 @@ type FolderUIState = {
 };
 
 export const useFolderUIStore = create<FolderUIState>((set) => ({
-  openFolders: {},
+  openFolders: {
+    "1": true,
+  },
   toggleFolder: (id: string) =>
     set((state) => ({
       openFolders: {
