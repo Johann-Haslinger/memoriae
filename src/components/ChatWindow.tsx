@@ -54,15 +54,27 @@ const ChatWindow = () => {
 
   return (
     <>
-      <div
-        className="w-10 h-10 fixed top-2 right-2 z-50 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 shadow-lg transition-colors cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <PanelRight className="text-slate-500 dark:text-white/60" size={22} />
+      <div className="absolute top-2 right-2 z-50">
+        <Tooltip
+          id="toggle-chat-tooltip"
+          place="left-end"
+          content="Toggle chat"
+          shortcut={["⌘", "⌥", "B"]}
+        >
+          <div
+            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 shadow-lg transition-colors cursor-pointer"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <PanelRight
+              className="text-slate-500 dark:text-white/60"
+              size={22}
+            />
+          </div>
+        </Tooltip>
       </div>
 
       <aside
-        className={`h-full bg-gray-100 dark:bg-[#141414] flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative `}
+        className={`h-full bg-gray-100 border-l border-white/5 dark:bg-[#141414] flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative `}
         style={{
           width: chatWidth,
           minWidth: isOpen ? 384 : 0,

@@ -84,7 +84,7 @@ const MainContent = () => {
 
   return (
     <main className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1919] text-gray-900 dark:text-gray-100">
-      <div className="sticky top-0 pt-3 z-10 bg-white dark:bg-[#1a1919]">
+      <div className="sticky top-0 z-10 bg-white dark:bg-[#1a1919]">
         <Breadcrumb
           breadcrumbPath={breadcrumbPath}
           setSelectedFolderId={setSelectedFolderId}

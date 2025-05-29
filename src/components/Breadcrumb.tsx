@@ -1,5 +1,6 @@
 import React from "react";
 import type { Folder } from "../interfaces";
+import { useSidebarStore } from "../store/sidebarStore";
 
 interface BreadcrumbProps {
   breadcrumbPath: Folder[];
@@ -10,10 +11,14 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   breadcrumbPath,
   setSelectedFolderId,
 }) => {
+  const isSidebarOpen = useSidebarStore((state) => state.isOpen);
+
   if (breadcrumbPath.length <= 1) return <div className="h-10" />;
   return (
     <nav
-      className="w-full px-6 h-10 text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1 select-none"
+      className={`w-full transition-all duration-300 ease-in-out px-4 h-14 pt-0.5 text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1 select-none ${
+        isSidebarOpen ? "pl-4" : "pl-16"
+      }`}
       aria-label="Breadcrumb"
     >
       {breadcrumbPath.map((folder, idx) => {

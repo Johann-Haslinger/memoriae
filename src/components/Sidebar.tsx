@@ -3,7 +3,7 @@ import {
   ChevronRight as LucideChevronRight,
   PanelLeft,
 } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import type { Folder } from "../interfaces";
 import { Button } from "./Button";
@@ -11,6 +11,7 @@ import Tooltip from "./Tooltip";
 
 import { useFolderStore } from "../store/folderStore";
 import { useFolderUIStore } from "../store/folderUIStore";
+import { useSidebarStore } from "../store/sidebarStore";
 
 const FolderItem: React.FC<{
   folder: Folder & { children: Folder[] };
@@ -110,124 +111,63 @@ const FolderItem: React.FC<{
 };
 
 const Sidebar = () => {
-  const [open, setOpen] = useState(true);
+  const { isOpen, toggleSidebar } = useSidebarStore();
   const folders = useFolderStore((state) => state.folders);
   const tree = useOpenFoldersTree(folders);
-  const selectedFolderId = useFolderStore((state) => state.selectedFolderId);
-  const setSelectedFolderId = useFolderStore(
-    (state) => state.setSelectedFolderId
-  );
 
   // Add keyboard shortcut for toggling sidebar
-  useKeyboardShortcut(
-    { key: "b", meta: true },
-    () => setOpen((prev) => !prev),
-    [setOpen]
-  );
+  useKeyboardShortcut({ key: "b", meta: true }, () => toggleSidebar(), [
+    toggleSidebar,
+  ]);
 
   // Sidebar width for animation
-  const sidebarWidth = open ? 288 : 60; // px values for w-72 and w-24
-
-  // Only show top-level folders/subjects in collapsed state
-  const topLevelFolders = tree;
+  const sidebarWidth = isOpen ? 288 : 0; // px values for w-72
 
   return (
     <>
+      <div className="absolute top-2 left-2 z-50">
+        <Tooltip
+          place="left-end"
+          id="toggle-sidebar-tooltip"
+          content="Toggle sidebar"
+          shortcut={["⌘", "B"]}
+        >
+          <div
+            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 shadow-lg transition-colors cursor-pointer"
+            onClick={() => toggleSidebar()}
+          >
+            <PanelLeft
+              className="text-slate-500 dark:text-white/60"
+              size={22}
+            />
+          </div>
+        </Tooltip>
+      </div>
+
       <aside
-        className={`h-screen border-r border-white/5 py-2 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
-          open ? "px-2" : "items-center"
+        className={`h-screen transition-all duration-300 ease-in-out  border-r pt-16 border-white/5 py-2 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col ${
+          isOpen ? "px-2" : "items-center"
         }`}
         style={{
           width: sidebarWidth,
-          minWidth: open ? 256 : 64,
+          minWidth: isOpen ? 256 : 0,
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? "auto" : "none",
+          marginLeft: isOpen ? 0 : "-1rem",
+          overflow: "hidden",
         }}
       >
-        {/* Close button (now in a flex row at the top) */}
-        <div
-          className={`w-full mb-2 transition-all justify-between flex ${
-            open ? "pl-1" : "pl-1"
-          }`}
-        >
-          <Tooltip
-            place="right-end"
-            id="close-sidebar-tooltip"
-            content="Close sidebar"
-            shortcut={["⌘", "B"]}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              className=""
-              onClick={() => setOpen(!open)}
-              aria-label="Close sidebar"
-            >
-              <PanelLeft
-                size={22}
-                className="text-slate-500 dark:text-white/60"
-              />
-            </Button>
-          </Tooltip>
-        </div>
-
-        {open ? (
-          <>
-            <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-4">
-              {tree.length === 0 && (
-                <div className="text-slate-400">No subjects yet.</div>
-              )}
-              {tree.map((folder) => (
-                <FolderItem
-                  key={folder.id}
-                  folder={folder as Folder & { children: Folder[] }}
-                />
-              ))}
-            </nav>
-          </>
-        ) : (
-          // Collapsed: show only icons for top-level folders/subjects
-          <nav className="flex-1 flex flex-col items-center gap-3 mt-3 overflow-y-auto">
-            {topLevelFolders.map((folder) => {
-              // Helper to check if selectedFolderId is this folder or any of its descendants
-              function isFolderOrDescendantSelected(folderId: string): boolean {
-                if (selectedFolderId === folderId) return true;
-                // Find all children recursively
-                const stack = [folderId];
-                while (stack.length > 0) {
-                  const currentId = stack.pop();
-                  const children = folders.filter(
-                    (f) => f.parentId === currentId
-                  );
-                  for (const child of children) {
-                    if (child.id === selectedFolderId) return true;
-                    stack.push(child.id);
-                  }
-                }
-                return false;
-              }
-              const isSelected = isFolderOrDescendantSelected(folder.id);
-              return (
-                <Tooltip
-                  key={folder.id}
-                  id={`collapsed-folder-${folder.id}`}
-                  content={folder.name}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={
-                      isSelected
-                        ? "bg-blue-100 dark:bg-white/10 rounded-lg"
-                        : ""
-                    }
-                    onClick={() => setSelectedFolderId(folder.id)}
-                  >
-                    <span className="text-xl">{folder.icon || "📁"}</span>
-                  </Button>
-                </Tooltip>
-              );
-            })}
-          </nav>
-        )}
+        <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-4">
+          {tree.length === 0 && (
+            <div className="text-slate-400">No subjects yet.</div>
+          )}
+          {tree.map((folder) => (
+            <FolderItem
+              key={folder.id}
+              folder={folder as Folder & { children: Folder[] }}
+            />
+          ))}
+        </nav>
       </aside>
     </>
   );
