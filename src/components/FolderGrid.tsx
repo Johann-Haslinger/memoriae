@@ -1,6 +1,5 @@
-import { MoreVertical, Plus } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import type { Folder } from "../interfaces";
 import { useFolderStore } from "../store/folderStore";
 import { Button } from "./Button";
 import Tooltip from "./Tooltip";
@@ -11,14 +10,11 @@ interface FolderGridProps {
 
 const FolderGrid: React.FC<FolderGridProps> = ({ parentId }) => {
   const folders = useFolderStore((state) => state.folders);
-  const addFolder = useFolderStore((state) => state.addFolder);
   const updateFolder = useFolderStore((state) => state.updateFolder);
   const removeFolder = useFolderStore((state) => state.removeFolder);
   const setSelectedFolderId = useFolderStore(
     (state) => state.setSelectedFolderId
   );
-  const [isAddingFolder, setIsAddingFolder] = useState(false);
-  const [newFolderName, setNewFolderName] = useState("");
   const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const [editingFolderName, setEditingFolderName] = useState("");
   const [showMenuForFolder, setShowMenuForFolder] = useState<string | null>(
@@ -39,22 +35,6 @@ const FolderGrid: React.FC<FolderGridProps> = ({ parentId }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const handleAddFolder = () => {
-    if (newFolderName.trim()) {
-      const newFolder: Folder = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: newFolderName.trim(),
-        type: "folder",
-        parentId: parentId || undefined,
-        icon: "📁",
-        lastEditedAt: new Date().toISOString(),
-      };
-      addFolder(newFolder);
-      setNewFolderName("");
-      setIsAddingFolder(false);
-    }
-  };
 
   const handleUpdateFolderName = (folderId: string) => {
     if (editingFolderName.trim()) {
@@ -82,67 +62,21 @@ const FolderGrid: React.FC<FolderGridProps> = ({ parentId }) => {
   };
 
   return (
-    <div className="mt-20">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-[#FFFFFFCF]">Notes</h2>
-        {!isAddingFolder ? (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => setIsAddingFolder(true)}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Folder
-          </Button>
-        ) : (
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              placeholder="Folder name"
-              className="px-3 py-1 outline-blue-400/80 rounded bg-[#2a2a2a] dark:bg-[#1a1a1a] text-white placeholder-[#666666] border border-[#404040] dark:border-[#2a2a2a]"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleAddFolder();
-                } else if (e.key === "Escape") {
-                  setIsAddingFolder(false);
-                  setNewFolderName("");
-                }
-              }}
-            />
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleAddFolder}
-              disabled={!newFolderName.trim()}
-            >
-              Create
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setIsAddingFolder(false);
-                setNewFolderName("");
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        )}
-      </div>
-
+    <div className="">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {childFolders.map((folder) => (
           <div
             key={folder.id}
             className="bg-[#2a2a2a] select-none border-white/5 dark:bg-white/[0.03] rounded-lg p-4 cursor-pointer hover:bg-[#333333] dark:hover:bg-[#222222] transition-colors"
+            onClick={() => setSelectedFolderId(folder.id)}
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-3xl">{folder.icon || "📁"}</span>
-              <div className="relative" ref={menuRef}>
+              <div
+                className="relative"
+                ref={menuRef}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Tooltip
                   id={`folder-menu-${folder.id}`}
                   content="Folder options"
@@ -210,7 +144,8 @@ const FolderGrid: React.FC<FolderGridProps> = ({ parentId }) => {
             ) : (
               <h3
                 className="font-medium text-[#FFFFFFCF] mb-2"
-                onClick={() => setSelectedFolderId(folder.id)}
+                // Remove onClick from here, folder opens on card click now
+                // onClick={() => setSelectedFolderId(folder.id)}
               >
                 {folder.name}
               </h3>

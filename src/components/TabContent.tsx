@@ -24,41 +24,25 @@ const TabContent: React.FC<TabContentProps> = ({
   noteDivRef,
   selectedFolderId,
 }) => {
-  switch (activeTab) {
-    case "content":
-      return <FolderGrid parentId={selectedFolderId} />;
-    case "notes":
-      return (
-        <NoteSection
-          noteValue={noteValue}
-          editingNote={editingNote}
-          setEditingNote={setEditingNote}
-          handleInput={handleInput}
-          handleSaveNote={handleSaveNote}
-          noteDivRef={noteDivRef}
-        />
-      );
-    case "flashcards":
-      return (
-        <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-          Flashcards feature coming soon
-        </div>
-      );
-    case "quizzes":
-      return (
-        <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-          Quizzes feature coming soon
-        </div>
-      );
-    case "summary":
-      return (
-        <div className="py-8 text-center text-gray-500 dark:text-gray-400">
-          Summary feature coming soon
-        </div>
-      );
-    default:
-      return null;
+  if (activeTab === "content") {
+    return <FolderGrid parentId={selectedFolderId} />;
   }
+
+  if (activeTab === "notes") {
+    return (
+      <NoteSection
+        noteValue={noteValue}
+        editingNote={editingNote}
+        setEditingNote={setEditingNote}
+        handleInput={handleInput}
+        handleSaveNote={handleSaveNote}
+        noteDivRef={noteDivRef}
+        selectedFolderId={selectedFolderId}
+      />
+    );
+  }
+
+  return null;
 };
 
 export default TabContent;

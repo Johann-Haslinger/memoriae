@@ -20,7 +20,7 @@ const MainContent = () => {
   const [editingNote, setEditingNote] = useState(false);
   const [noteValue, setNoteValue] = useState(selectedFolder?.note || "");
   const noteDivRef = React.useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<TabType>("notes");
+  const [activeTab, setActiveTab] = useState<TabType>("content");
   const iconOptions = [
     "📚",
     "➗",
@@ -111,8 +111,12 @@ const MainContent = () => {
               {selectedFolder.name}
             </h1>
 
-            <div className="mt-8">
-              <ContentTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <div className="mt-4">
+              <ContentTabs
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                selectedFolderId={selectedFolder.id}
+              />
               <div className="mt-4">
                 <TabContent
                   activeTab={activeTab}

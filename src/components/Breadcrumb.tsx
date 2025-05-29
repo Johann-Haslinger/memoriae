@@ -18,19 +18,21 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
     >
       {breadcrumbPath.map((folder, idx) => {
         const isCurrent = idx === breadcrumbPath.length - 1;
-        const opacityClass = isCurrent ? "opacity-80" : "opacity-50";
+        const opacityClass = isCurrent ? "opacity-80" : "opacity-80";
         return (
           <span key={folder.id} className={`flex items-center ${opacityClass}`}>
-            {idx > 0 && <span className="mx-1">/</span>}
+            {idx > 0 && <span className="opacity-50 mr-2">/</span>}
             {isCurrent ? (
-              <span className="font-semibold text-gray-900 dark:text-gray-100">
+              <span className="text-gray-900 px-1 dark:text-gray-100 flex items-center gap-1">
+                <span className="text-base mr-1">{folder.icon || "📁"}</span>
                 {folder.name}
               </span>
             ) : (
               <button
-                className="hover:underline hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none"
+                className="flex items-center gap-1 focus:outline-none px-1 rounded-md transition-colors hover:bg-white/5"
                 onClick={() => setSelectedFolderId(folder.id)}
               >
+                <span className="text-base mr-1">{folder.icon || "📁"}</span>
                 {folder.name}
               </button>
             )}
