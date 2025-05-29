@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import type { Folder } from "../interfaces";
 import { useFolderStore } from "../store/folderStore";
 import Breadcrumb from "./Breadcrumb";
-import type { TabType } from "./ContentTabs";
 import ContentTabs from "./ContentTabs";
 import FolderCoverImage from "./FolderCoverImage";
 import FolderIconPicker from "./FolderIconPicker";
+import type { TabType } from "./TabBar";
 import TabContent from "./TabContent";
 import Tooltip from "./Tooltip";
 
@@ -83,65 +83,69 @@ const MainContent = () => {
   };
 
   return (
-    <main className="flex-1 pb-40 h-full bg-white dark:bg-white/10 text-gray-900 dark:text-gray-100 py-6 overflow-auto">
-      {selectedFolder ? (
-        <>
-          <div className="px-6">
-            <Breadcrumb
-              breadcrumbPath={breadcrumbPath}
-              setSelectedFolderId={setSelectedFolderId}
-            />
-          </div>
-          <FolderCoverImage
-            coverImage={selectedFolder.coverImage}
-            onChangeCoverImage={(coverImage?: string) =>
-              updateFolder(selectedFolder.id, { coverImage })
-            }
-          />
-          <div className="px-8">
-            <FolderIconPicker
-              coverImage={selectedFolder.coverImage}
-              iconOptions={iconOptions}
-              selectedIcon={selectedFolder.icon || ""}
-              onSelect={(icon) => updateFolder(selectedFolder.id, { icon })}
-              show={showIconPicker}
-              setShow={setShowIconPicker}
-            />
-            <h1 className="text-4xl font-bold mt-8 text-[#FFFFFFCF]">
-              {selectedFolder.name}
-            </h1>
-
-            <div className="mt-4">
-              <ContentTabs
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                selectedFolderId={selectedFolder.id}
+    <main className="flex-1 flex flex-col h-full bg-white dark:bg-[#1a1919] text-gray-900 dark:text-gray-100">
+      <div className="sticky top-0 pt-2 z-10 bg-white dark:bg-[#1a1919]">
+        <Breadcrumb
+          breadcrumbPath={breadcrumbPath}
+          setSelectedFolderId={setSelectedFolderId}
+        />
+      </div>
+      <div className="flex-1 overflow-auto pb-40">
+        <div className="max-w-4xl mx-auto">
+          {selectedFolder ? (
+            <>
+              <FolderCoverImage
+                coverImage={selectedFolder.coverImage}
+                onChangeCoverImage={(coverImage?: string) =>
+                  updateFolder(selectedFolder.id, { coverImage })
+                }
               />
-              <div className="mt-4">
-                <TabContent
-                  activeTab={activeTab}
-                  noteValue={noteValue}
-                  editingNote={editingNote}
-                  setEditingNote={setEditingNote}
-                  handleInput={handleInput}
-                  handleSaveNote={handleSaveNote}
-                  noteDivRef={noteDivRef}
-                  selectedFolderId={selectedFolder.id}
+              <div className="px-8">
+                <FolderIconPicker
+                  coverImage={selectedFolder.coverImage}
+                  iconOptions={iconOptions}
+                  selectedIcon={selectedFolder.icon || ""}
+                  onSelect={(icon) => updateFolder(selectedFolder.id, { icon })}
+                  show={showIconPicker}
+                  setShow={setShowIconPicker}
                 />
+                <h1 className="text-4xl font-bold mt-8 text-[#FFFFFFCF]">
+                  {selectedFolder.name}
+                </h1>
+
+                <div className="mt-4">
+                  <ContentTabs
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    selectedFolderId={selectedFolder.id}
+                  />
+                  <div className="mt-4">
+                    <TabContent
+                      activeTab={activeTab}
+                      noteValue={noteValue}
+                      editingNote={editingNote}
+                      setEditingNote={setEditingNote}
+                      handleInput={handleInput}
+                      handleSaveNote={handleSaveNote}
+                      noteDivRef={noteDivRef}
+                      selectedFolderId={selectedFolder.id}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <Tooltip
-          id="select-folder-tooltip"
-          content="Select a folder to view its details"
-        >
-          <h1 className="text-2xl font-bold mb-4">
-            Select a folder to view its details
-          </h1>
-        </Tooltip>
-      )}
+            </>
+          ) : (
+            <Tooltip
+              id="select-folder-tooltip"
+              content="Select a folder to view its details"
+            >
+              <h1 className="text-2xl font-bold mb-4">
+                Select a folder to view its details
+              </h1>
+            </Tooltip>
+          )}
+        </div>
+      </div>
     </main>
   );
 };

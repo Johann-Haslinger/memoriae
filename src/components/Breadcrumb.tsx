@@ -13,7 +13,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   if (breadcrumbPath.length <= 1) return <div className="h-10" />;
   return (
     <nav
-      className="text-sm h-10 text-gray-500 dark:text-gray-300 flex items-center gap-1 pb-3 select-none"
+      className="w-full px-6 h-10 text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1 select-none"
       aria-label="Breadcrumb"
     >
       {breadcrumbPath.map((folder, idx) => {

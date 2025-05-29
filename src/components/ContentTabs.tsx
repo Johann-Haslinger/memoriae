@@ -93,7 +93,7 @@ const ContentTabs: React.FC<ContentTabsProps> = ({
   };
 
   return (
-    <div className="w-full mt-4 mb-6">
+    <div className="w-full mt-6 mb-6">
       <div className="flex items-center justify-between">
         <nav
           className="flex items-center space-x-1"

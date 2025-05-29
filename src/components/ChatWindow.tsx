@@ -54,7 +54,9 @@ const ChatWindow = () => {
 
   return (
     <aside
-      className="h-full bg-gray-100 dark:bg-white/[0.08] flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative"
+      className={`h-full flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative ${
+        isOpen ? "bg-gray-100 dark:bg-[#141414]" : ""
+      }`}
       style={{
         width: chatWidth,
         minWidth: isOpen ? 384 : 40,
@@ -210,7 +212,7 @@ const ChatWindow = () => {
           shortcut={["⌘", "⌥", "B"]}
         >
           <button
-            className="h-screen flex items-center justify-center w-10 bg-white dark:bg-white/[0.08] hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+            className="absolute top-4 right-4 p-1.5 hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
             onClick={() => setIsOpen(true)}
             aria-label="Open chat"
           >

@@ -134,7 +134,7 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`h-screen border-r border-white/5 py-4 bg-white dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
+        className={`h-screen border-r border-white/5 py-4 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
           open ? "px-4" : "items-center"
         }`}
         style={{
