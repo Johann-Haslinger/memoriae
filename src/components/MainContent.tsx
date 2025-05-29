@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import type { Folder } from "../interfaces";
 import { useFolderStore } from "../store/folderStore";
 import Breadcrumb from "./Breadcrumb";
+import type { TabType } from "./ContentTabs";
+import ContentTabs from "./ContentTabs";
 import FolderCoverImage from "./FolderCoverImage";
 import FolderIconPicker from "./FolderIconPicker";
-import NoteSection from "./NoteSection";
+import TabContent from "./TabContent";
 import Tooltip from "./Tooltip";
 
 const MainContent = () => {
@@ -18,6 +20,7 @@ const MainContent = () => {
   const [editingNote, setEditingNote] = useState(false);
   const [noteValue, setNoteValue] = useState(selectedFolder?.note || "");
   const noteDivRef = React.useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<TabType>("notes");
   const iconOptions = [
     "📚",
     "➗",
@@ -80,7 +83,7 @@ const MainContent = () => {
   };
 
   return (
-    <main className="flex-1 h-full bg-white dark:bg-white/10 text-gray-900 dark:text-gray-100 py-6 overflow-auto">
+    <main className="flex-1 pb-40 h-full bg-white dark:bg-white/10 text-gray-900 dark:text-gray-100 py-6 overflow-auto">
       {selectedFolder ? (
         <>
           <div className="px-6">
@@ -107,14 +110,22 @@ const MainContent = () => {
             <h1 className="text-4xl font-bold mt-8 text-[#FFFFFFCF]">
               {selectedFolder.name}
             </h1>
-            <NoteSection
-              noteValue={noteValue}
-              editingNote={editingNote}
-              setEditingNote={setEditingNote}
-              handleInput={handleInput}
-              handleSaveNote={handleSaveNote}
-              noteDivRef={noteDivRef}
-            />
+
+            <div className="mt-8">
+              <ContentTabs activeTab={activeTab} onTabChange={setActiveTab} />
+              <div className="mt-4">
+                <TabContent
+                  activeTab={activeTab}
+                  noteValue={noteValue}
+                  editingNote={editingNote}
+                  setEditingNote={setEditingNote}
+                  handleInput={handleInput}
+                  handleSaveNote={handleSaveNote}
+                  noteDivRef={noteDivRef}
+                  selectedFolderId={selectedFolder.id}
+                />
+              </div>
+            </div>
           </div>
         </>
       ) : (

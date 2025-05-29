@@ -6,4 +6,5 @@ export interface Folder {
   note?: string;
   icon?: string;
   coverImage?: string;
+  lastEditedAt?: string;
 }

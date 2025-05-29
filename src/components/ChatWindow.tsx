@@ -54,7 +54,7 @@ const ChatWindow = () => {
 
   return (
     <aside
-      className="h-full bg-gray-100 dark:bg-white/[0.08] border-l border-slate-200 dark:border-white/[0.05] flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative"
+      className="h-full bg-gray-100 dark:bg-white/[0.08] flex flex-col text-gray-900 dark:text-gray-100 transition-all duration-300 ease-in-out relative"
       style={{
         width: chatWidth,
         minWidth: isOpen ? 384 : 40,
@@ -111,7 +111,7 @@ const ChatWindow = () => {
 
             {/* Input Form */}
             <form onSubmit={handleSendMessage} className="relative">
-              <div className="relative bg-white dark:bg-white/[0.03] rounded-xl border border-gray-300 dark:border-white/5">
+              <div className="relative bg-white dark:bg-[#1a1919] rounded-2xl">
                 {/* Top Bar */}
                 <div className="flex items-centers space-x-2 p-3 pb-2">
                   <Tooltip
@@ -120,7 +120,7 @@ const ChatWindow = () => {
                   >
                     <button
                       type="button"
-                      className="bg-white dark:bg-white/[0.03] rounded-full border-gray-300 dark:border-white/5 text-xs p-1 h-fit px-1.5"
+                      className="bg-white dark:bg-[#212020] rounded-full border-gray-300 dark:border-white/5 text-xs p-1 h-fit px-1.5"
                       title="Add context folder"
                     >
                       @
@@ -133,7 +133,7 @@ const ChatWindow = () => {
                       {contextFolders.map((folder) => (
                         <div
                           key={folder.id}
-                          className="flex dark:text-white/80 items-center gap-1 px-2 py-1 bg-white dark:bg-white/[0.03] rounded-full  border-gray-300 dark:border-white/5 text-xs"
+                          className="flex dark:text-white/80 items-center gap-1 px-2 py-1 bg-white dark:bg-[#212020] rounded-full  border-gray-300 dark:border-white/5 text-xs"
                         >
                           <span>{folder.name}</span>
                           <Tooltip

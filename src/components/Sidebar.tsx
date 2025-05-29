@@ -8,6 +8,7 @@ import {
 import React, { useMemo, useState } from "react";
 import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import type { Folder } from "../interfaces";
+import { Button } from "./Button";
 import Tooltip from "./Tooltip";
 
 import { useFolderStore } from "../store/folderStore";
@@ -32,6 +33,8 @@ const FolderItem: React.FC<{
         className={`flex select-none text-sm items-center gap-2 py-1.5 dark:text-white/60 px-2 rounded-lg transition-colors cursor-pointer
             ${level === 0 ? "" : ""}
             hover:bg-slate-100 dark:hover:bg-white/5 hover:text-white/100
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400/80
+            focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#1a1a1a]
             ${
               isSelected
                 ? "bg-blue-100 dark:bg-white/5 dark:text-white/100"
@@ -43,6 +46,18 @@ const FolderItem: React.FC<{
           setSelectedFolderId(folder.id);
         }}
         onDoubleClick={() => hasChildren && toggleFolder(folder.id)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (hasChildren) {
+              toggleFolder(folder.id);
+            }
+            setSelectedFolderId(folder.id);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-expanded={hasChildren ? isOpen : undefined}
       >
         <span className="truncate flex-1">{folder.name}</span>
 
@@ -51,13 +66,21 @@ const FolderItem: React.FC<{
             id={`open-folder-${folder.id}`}
             content={isOpen ? "Close folder" : "Open folder"}
           >
-            <span className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFolder(folder.id);
+              }}
+            >
               {isOpen ? (
-                <LucideChevronDown className="text-white/50 ml-1 w-4 h-4" />
+                <LucideChevronDown className="text-white/50 w-4 h-4" />
               ) : (
-                <LucideChevronRight className="text-white/50 ml-1 w-4 h-4" />
+                <LucideChevronRight className="text-white/50 w-4 h-4" />
               )}
-            </span>
+            </Button>
           </Tooltip>
         ) : (
           <span className="w-4" />
@@ -109,7 +132,7 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`h-screen py-4 bg-white dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 p-2 flex flex-col border-r border-slate-200 dark:border-white/[0.05] transition-all duration-300 ease-in-out ${
+        className={`h-screen py-4 bg-white dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 p-2 flex flex-col transition-all duration-300 ease-in-out ${
           open ? "px-4" : "items-center"
         }`}
         style={{
@@ -129,8 +152,9 @@ const Sidebar = () => {
             content="Close sidebar"
             shortcut={["⌘", "B"]}
           >
-            <button
-              className="p-1.5 w-fit hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors"
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setOpen(!open)}
               aria-label="Close sidebar"
             >
@@ -138,13 +162,13 @@ const Sidebar = () => {
                 size={22}
                 className="text-slate-500 dark:text-white/60"
               />
-            </button>
+            </Button>
           </Tooltip>
         </div>
 
         {open ? (
           <>
-            <nav className="flex-1  mt-2 space-y-2 overflow-y-auto pr-2">
+            <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-2">
               {tree.length === 0 && (
                 <div className="text-slate-400">No subjects yet.</div>
               )}
@@ -167,12 +191,10 @@ const Sidebar = () => {
                   id={`collapsed-folder-${folder.id}`}
                   content={folder.name}
                 >
-                  <button
-                    className={`flex items-center justify-center p-1.5 rounded-lg transition-colors focus:outline-none ${
-                      isSelected
-                        ? "bg-blue-100 dark:bg-white/10"
-                        : "hover:bg-slate-100 dark:hover:bg-white/10"
-                    }`}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={isSelected ? "bg-blue-100 dark:bg-white/10" : ""}
                     onClick={() => setSelectedFolderId(folder.id)}
                   >
                     {folder.type === "subject" ? (
@@ -180,7 +202,7 @@ const Sidebar = () => {
                     ) : (
                       <LucideFolder className="text-yellow-400 w-6 h-6" />
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
               );
             })}

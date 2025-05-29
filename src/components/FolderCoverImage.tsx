@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { VITE_UNSPLASH_ACCESS_KEY } from "../environment";
+import { Button } from "./Button";
 import Tooltip from "./Tooltip";
 
 interface FolderCoverImageProps {
@@ -150,13 +151,14 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
             id="add-cover-tooltip"
             content="Add a cover image to this folder"
           >
-            <button
-              className="px-4 py-2 bg-[#333333] dark:bg-[#222222] rounded-lg shadow text-sm font-medium hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors text-white"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={fetchRandomUnsplash}
               disabled={loading}
             >
               {loading ? "Loading..." : "Add cover image"}
-            </button>
+            </Button>
           </Tooltip>
         </div>
       </div>
@@ -173,15 +175,15 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
       />
       {/* Overlay button - only visible on hover */}
 
-      <button
-        className="absolute top-2 right-2 bg-[#333333]/90 dark:bg-[#222222]/90 rounded px-3 py-1 text-xs font-medium shadow hover:bg-[#404040] dark:hover:bg-[#2a2a2a] transition-colors text-white opacity-0 group-hover:opacity-100 focus:opacity-100"
+      <Button
+        variant="secondary"
+        size="sm"
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 focus:opacity-100"
         onClick={() => setShowMenu((v) => !v)}
-        tabIndex={0}
         aria-label="Change cover"
-        style={{ transition: "opacity 0.2s" }}
       >
         Change cover
-      </button>
+      </Button>
 
       {/* Menu */}
       {showMenu && (
@@ -201,16 +203,17 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
               placeholder="Search images..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 px-2 py-1 rounded border border-[#404040] dark:border-[#2a2a2a] text-xs bg-[#2a2a2a] dark:bg-[#1a1a1a] text-white placeholder-[#666666]"
+              className="flex-1 outline-none px-2 py-1 rounded border border-[#404040] dark:border-[#2a2a2a] text-xs bg-[#2a2a2a] dark:bg-[#1a1a1a] text-white placeholder-[#666666]"
             />
             <Tooltip id="search-images-tooltip" content="Search for images">
-              <button
+              <Button
                 type="submit"
-                className="px-2 py-1 rounded bg-white text-[#222222] text-xs hover:bg-[#f0f0f0]"
+                variant="default"
+                size="sm"
                 disabled={loading}
               >
                 Search
-              </button>
+              </Button>
             </Tooltip>
           </form>
           {loading && <div className="text-xs text-[#999999]">Loading...</div>}
@@ -224,9 +227,10 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
               </div>
               <div className="grid grid-cols-4 gap-2 mb-3">
                 {suggestions.map((img) => (
-                  <button
-                    className="block w-full h-16 hover:scale-105 active:scale-95 transition-transform rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
-                    style={{ padding: 0 }}
+                  <Button
+                    key={img.id}
+                    variant="ghost"
+                    className="block w-full h-16 hover:scale-105 active:scale-95 transition-transform rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] p-0"
                     onClick={() => {
                       // First set the regular quality
                       onChangeCoverImage(img.regular);
@@ -245,7 +249,7 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                       alt="Unsplash suggestion"
                       className="w-full h-full object-cover"
                     />
-                  </button>
+                  </Button>
                 ))}
               </div>
             </>
@@ -260,9 +264,9 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                   id={`select-image-${i}`}
                   content="Select this image"
                 >
-                  <button
-                    className="block w-full hover:scale-105 active:scale-95 transition-transform h-16 rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] focus:ring-2 focus:ring-white"
-                    style={{ padding: 0 }}
+                  <Button
+                    variant="ghost"
+                    className="block w-full hover:scale-105 active:scale-95 transition-transform h-16 rounded overflow-hidden border border-[#404040] dark:border-[#2a2a2a] p-0"
                     onClick={() => {
                       // First set the regular quality
                       onChangeCoverImage(img.regular);
@@ -281,21 +285,23 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                       alt="Unsplash result"
                       className="w-full h-full object-cover"
                     />
-                  </button>
+                  </Button>
                 </Tooltip>
               ))}
             </div>
           )}
 
-          <button
-            className="block w-full text-left px-2 py-1 rounded hover:bg-[#404040] dark:hover:bg-[#2a2a2a] text-xs text-red-500 mt-2"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full text-left text-red-500 mt-2"
             onClick={() => {
               onChangeCoverImage(undefined);
               setShowMenu(false);
             }}
           >
             Remove cover
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -35,7 +35,7 @@ const Tooltip = ({
       <ReactTooltip
         id={id}
         place={place}
-        className="z-50"
+        className="z-5 text-sm"
         style={{
           backgroundColor: "rgba(0, 0, 0)",
           borderRadius: "10px",

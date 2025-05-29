@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "./Button";
 import Tooltip from "./Tooltip";
 
 interface NoteSectionProps {
@@ -34,12 +35,13 @@ const NoteSection: React.FC<NoteSectionProps> = ({
         </div>
       ) : (
         <Tooltip id="add-note-tooltip" content="Add a note to this folder">
-          <button
+          <Button
             onClick={() => setEditingNote(true)}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            variant="default"
+            size="sm"
           >
             Add Note
-          </button>
+          </Button>
         </Tooltip>
       )}
     </div>
