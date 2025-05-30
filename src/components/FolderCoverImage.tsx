@@ -171,7 +171,7 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
       <img
         src={coverImage}
         alt="Folder cover"
-        className="w-full h-32 lg:h-60 object-cover shadow-sm"
+        className="w-full h-32 lg:h-60 xl:h-[16rem] object-cover shadow-sm"
       />
       {/* Overlay button - only visible on hover */}
 

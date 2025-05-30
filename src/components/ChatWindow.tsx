@@ -62,7 +62,7 @@ const ChatWindow = () => {
           shortcut={["⌘", "⌥", "B"]}
         >
           <div
-            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 shadow-lg transition-colors cursor-pointer"
+            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
             <PanelRight

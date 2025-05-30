@@ -1,7 +1,10 @@
 import {
   ChevronDown as LucideChevronDown,
   ChevronRight as LucideChevronRight,
+  MoreVertical,
   PanelLeft,
+  Search,
+  SquarePen,
 } from "lucide-react";
 import React, { useMemo } from "react";
 import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
@@ -23,6 +26,7 @@ const FolderItem: React.FC<{
     (state) => state.setSelectedFolderId
   );
   const folders = useFolderStore((state) => state.folders);
+  const [showMenu, setShowMenu] = React.useState(false);
 
   // Check if this folder has any children in the actual folders array
   const hasChildren = folders.some((f) => f.parentId === folder.id);
@@ -32,7 +36,7 @@ const FolderItem: React.FC<{
   return (
     <div>
       <div
-        className={`flex select-none text-sm items-center gap-2 py-1 dark:text-white/80 px-2 rounded-lg transition-colors cursor-pointer
+        className={`flex select-none text-sm items-center gap-2 py-1 dark:text-white/80 px-2 rounded-lg transition-colors cursor-pointer group
             ${level === 0 ? "" : ""}
             hover:bg-slate-100 dark:hover:bg-white/5 hover:text-white/100
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400/80
@@ -47,13 +51,9 @@ const FolderItem: React.FC<{
           e.stopPropagation();
           setSelectedFolderId(folder.id);
         }}
-        onDoubleClick={() => hasChildren && toggleFolder(folder.id)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            if (hasChildren) {
-              toggleFolder(folder.id);
-            }
             setSelectedFolderId(folder.id);
           }
         }}
@@ -61,33 +61,79 @@ const FolderItem: React.FC<{
         role="button"
         aria-expanded={hasChildren ? isOpen : undefined}
       >
-        <span className="mr-2 text-lg">{folder.icon}</span>
+        <div
+          className="relative w-6 h-6 flex items-center justify-center"
+          onClick={(e) => {
+            if (hasChildren) {
+              e.stopPropagation();
+              toggleFolder(folder.id);
+            }
+          }}
+        >
+          {hasChildren ? (
+            <>
+              <span className="absolute text-lg transition-opacity group-hover:opacity-0">
+                {folder.icon}
+              </span>
+              <span className="absolute text-lg opacity-0 group-hover:opacity-100">
+                {isOpen ? (
+                  <LucideChevronDown className="text-white/50 w-4 h-4" />
+                ) : (
+                  <LucideChevronRight className="text-white/50 w-4 h-4" />
+                )}
+              </span>
+            </>
+          ) : (
+            <span className="text-lg">{folder.icon}</span>
+          )}
+        </div>
         <span className="truncate flex-1">{folder.name}</span>
 
-        {hasChildren ? (
-          <Tooltip
-            id={`open-folder-${folder.id}`}
-            content={isOpen ? "Close folder" : "Open folder"}
-          >
+        <div className="flex items-center gap-1">
+          <div className="relative">
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 p-0"
+              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleFolder(folder.id);
+                setShowMenu(!showMenu);
               }}
             >
-              {isOpen ? (
-                <LucideChevronDown className="text-white/50 w-4 h-4" />
-              ) : (
-                <LucideChevronRight className="text-white/50 w-4 h-4" />
-              )}
+              <MoreVertical className="text-white/50 w-4 h-4" />
             </Button>
-          </Tooltip>
-        ) : (
-          <span className="w-4" />
-        )}
+
+            {showMenu && (
+              <div
+                className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-[#1a1a1a] ring-1 ring-black ring-opacity-5 z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="py-1" role="menu">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
+                    role="menuitem"
+                    onClick={() => {
+                      // TODO: Implement rename functionality
+                      setShowMenu(false);
+                    }}
+                  >
+                    Rename
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-white/5"
+                    role="menuitem"
+                    onClick={() => {
+                      // TODO: Implement delete functionality
+                      setShowMenu(false);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       {hasChildren && isOpen && (
         <div
@@ -133,7 +179,7 @@ const Sidebar = () => {
           shortcut={["⌘", "B"]}
         >
           <div
-            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 shadow-lg transition-colors cursor-pointer"
+            className="w-10 h-10 flex items-center justify-center hover:bg-slate-200 rounded-lg dark:hover:bg-white/10 transition-colors cursor-pointer"
             onClick={() => toggleSidebar()}
           >
             <PanelLeft
@@ -145,7 +191,7 @@ const Sidebar = () => {
       </div>
 
       <aside
-        className={`h-screen transition-all duration-300 ease-in-out  border-r pt-16 border-white/5 py-2 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col ${
+        className={`h-screen transition-all duration-300 ease-in-out border-r pt-16 border-white/5 py-2 bg-white dark:bg-[#141414] text-slate-900 dark:text-slate-100 p-2 flex flex-col ${
           isOpen ? "px-2" : "items-center"
         }`}
         style={{
@@ -157,6 +203,38 @@ const Sidebar = () => {
           overflow: "hidden",
         }}
       >
+        <div className="flex text-[#FFFFFFCF] flex-col gap-2 mb-4 pb-2">
+          <button
+            className="flex items-center justify-between px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200 rounded-lg hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors group"
+            onClick={() => {
+              // TODO: Implement add folder functionality
+            }}
+          >
+            <div className="flex items-center gap-4">
+              <SquarePen className="size-4" />
+              <span>Add folder</span>
+            </div>
+          </button>
+          <button
+            className="flex items-center justify-between px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200 rounded-lg hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors group"
+            onClick={() => {
+              // Dispatch a custom event to open the command menu
+              window.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "k", metaKey: true })
+              );
+            }}
+          >
+            <div className="flex items-center gap-4">
+              <Search className="size-4" />
+              <span>Search folders</span>
+            </div>
+            <span className="text-xs text-neutral-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              ⌘K
+            </span>
+          </button>
+        </div>
+
+        <p className="text-sm ml-2 font-medium text-white/50 px-2">Subjects</p>
         <nav className="flex-1 pt-2 space-y-2 overflow-y-auto pr-2 -ml-2 pl-4">
           {tree.length === 0 && (
             <div className="text-slate-400">No subjects yet.</div>

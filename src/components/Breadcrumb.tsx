@@ -13,7 +13,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const isSidebarOpen = useSidebarStore((state) => state.isOpen);
 
-  if (breadcrumbPath.length <= 1) return <div className="h-10" />;
+  if (breadcrumbPath.length <= 1) return <div className="h-14" />;
   return (
     <nav
       className={`w-full transition-all duration-300 ease-in-out px-4 h-14 pt-0.5 text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1 select-none ${

@@ -59,7 +59,7 @@ const CollapsibleNote: React.FC<CollapsibleNoteProps> = ({
           className="flex items-center gap-2 cursor-pointer hover:bg-white/10 px-2 py-1 rounded-md transition-colors"
         >
           <span className="text-xl">{folder.icon || "📁"}</span>
-          <span className="font-medium">{folder.name}</span>
+          <span className="font-semibold">{folder.name}</span>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Folder } from "../interfaces";
+import { useFlashcardStore } from "../store/flashcardStore";
 import { useFolderStore } from "../store/folderStore";
 import Breadcrumb from "./Breadcrumb";
 import ContentTabs from "./ContentTabs";
@@ -59,13 +60,47 @@ const MainContent = () => {
   const breadcrumbPath = getFolderPath(selectedFolder, folders);
 
   // Keep noteValue in sync with folder change
-  React.useEffect(() => {
+  useEffect(() => {
     setNoteValue(selectedFolder?.note || "");
     setEditingNote(false);
   }, [selectedFolderId]);
 
+  // Handle tab switching when folder changes
+  useEffect(() => {
+    if (selectedFolder) {
+      const hasSubfolders = folders.some(
+        (f) => f.parentId === selectedFolderId
+      );
+      const hasNotes = selectedFolder.note
+        ? selectedFolder.note.trim().length > 0
+        : false;
+      const hasFlashcards = useFlashcardStore
+        .getState()
+        .flashcards.some((f) => f.folderId === selectedFolderId);
+
+      // Check if current tab is available
+      const isCurrentTabAvailable =
+        (activeTab === "content" && hasSubfolders) ||
+        (activeTab === "notes" && hasNotes) ||
+        (activeTab === "flashcards" && hasFlashcards);
+
+      // If current tab is not available, switch to an available one
+      if (!isCurrentTabAvailable) {
+        if (hasSubfolders) {
+          setActiveTab("content");
+        } else if (hasNotes) {
+          setActiveTab("notes");
+        } else if (hasFlashcards) {
+          setActiveTab("flashcards");
+        } else {
+          setActiveTab("content"); // Default to content tab
+        }
+      }
+    }
+  }, [selectedFolderId, activeTab, folders]);
+
   // Focus the contentEditable div when editingNote becomes true
-  React.useEffect(() => {
+  useEffect(() => {
     if (editingNote && noteDivRef.current) {
       noteDivRef.current.focus();
     }

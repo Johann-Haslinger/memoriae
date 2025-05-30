@@ -1,6 +1,7 @@
-import Sidebar from './components/Sidebar';
-import MainContent from './components/MainContent';
-import ChatWindow from './components/ChatWindow';
+import ChatWindow from "./components/ChatWindow";
+import CommandMenu from "./components/CommandMenu";
+import MainContent from "./components/MainContent";
+import Sidebar from "./components/Sidebar";
 
 const App = () => {
   return (
@@ -8,8 +9,9 @@ const App = () => {
       <Sidebar />
       <MainContent />
       <ChatWindow />
+      <CommandMenu />
     </div>
   );
-}
+};
 
 export default App;
