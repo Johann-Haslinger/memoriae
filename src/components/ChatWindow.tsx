@@ -18,10 +18,10 @@ interface ContextFolder {
 const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [contextFolders, setContextFolders] = useState<ContextFolder[]>([
-    { id: "1", name: "src/components" },
-    { id: "2", name: "src/utils" },
+    { id: "1", name: "Calculus" },
+    { id: "2", name: "Algebra" },
   ]);
 
   // Add keyboard shortcut for toggling chat
@@ -66,8 +66,8 @@ const ChatWindow = () => {
             onClick={() => setIsOpen(!isOpen)}
           >
             <PanelRight
-              className="text-slate-500 dark:text-white/60"
-              size={22}
+              className="text-slate-500 dark:text-[#FFFFFFCF]"
+              size={20}
             />
           </div>
         </Tooltip>
@@ -123,7 +123,7 @@ const ChatWindow = () => {
 
                 {/* Context Folders */}
                 {contextFolders.length > 0 && (
-                  <div className="mb-2 flex flex-wrap gap-2">
+                  <div className="mb-2 select-none flex flex-wrap gap-2">
                     {contextFolders.map((folder) => (
                       <div
                         key={folder.id}

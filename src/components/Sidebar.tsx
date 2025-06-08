@@ -34,7 +34,7 @@ const FolderItem: React.FC<{
   const isSelected = selectedFolderId === folder.id;
 
   return (
-    <div>
+    <div className="select-none">
       <div
         className={`flex select-none text-sm items-center gap-2 py-1 dark:text-white/80 px-2 rounded-lg transition-colors cursor-pointer group
             ${level === 0 ? "" : ""}
@@ -72,7 +72,7 @@ const FolderItem: React.FC<{
         >
           {hasChildren ? (
             <>
-              <span className="absolute text-lg transition-opacity group-hover:opacity-0">
+              <span className="absolute text-base transition-opacity group-hover:opacity-0">
                 {folder.icon}
               </span>
               <span className="absolute text-lg opacity-0 group-hover:opacity-100">
@@ -183,8 +183,8 @@ const Sidebar = () => {
             onClick={() => toggleSidebar()}
           >
             <PanelLeft
-              className="text-slate-500 dark:text-white/60"
-              size={22}
+              className="text-slate-500 dark:text-[#FFFFFFCF]"
+              size={20}
             />
           </div>
         </Tooltip>
@@ -203,7 +203,7 @@ const Sidebar = () => {
           overflow: "hidden",
         }}
       >
-        <div className="flex text-[#FFFFFFCF] flex-col gap-2 mb-4 pb-2">
+        <div className="flex text-[#FFFFFFCF] flex-col mb-4 pb-2">
           <button
             className="flex items-center justify-between px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200 rounded-lg hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors group"
             onClick={() => {
@@ -211,7 +211,7 @@ const Sidebar = () => {
             }}
           >
             <div className="flex items-center gap-4">
-              <SquarePen className="size-4" />
+              <SquarePen className="size-3.5" />
               <span>Add folder</span>
             </div>
           </button>
@@ -225,7 +225,7 @@ const Sidebar = () => {
             }}
           >
             <div className="flex items-center gap-4">
-              <Search className="size-4" />
+              <Search className="size-3.5" />
               <span>Search folders</span>
             </div>
             <span className="text-xs text-neutral-500 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { Folder } from "../interfaces";
 import { useFlashcardStore } from "../store/flashcardStore";
 import { useFolderStore } from "../store/folderStore";
+import { useFolderTabStore } from "../store/folderTabStore";
 import Breadcrumb from "./Breadcrumb";
 import ContentTabs from "./ContentTabs";
 import FolderCoverImage from "./FolderCoverImage";
@@ -22,6 +23,8 @@ const MainContent = () => {
   const [noteValue, setNoteValue] = useState(selectedFolder?.note || "");
   const noteDivRef = React.useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<TabType>("content");
+  const getFolderTab = useFolderTabStore((state) => state.getFolderTab);
+  const setFolderTab = useFolderTabStore((state) => state.setFolderTab);
   const iconOptions = [
     "📚",
     "➗",
@@ -67,7 +70,7 @@ const MainContent = () => {
 
   // Handle tab switching when folder changes
   useEffect(() => {
-    if (selectedFolder) {
+    if (selectedFolder && selectedFolderId) {
       const hasSubfolders = folders.some(
         (f) => f.parentId === selectedFolderId
       );
@@ -78,14 +81,19 @@ const MainContent = () => {
         .getState()
         .flashcards.some((f) => f.folderId === selectedFolderId);
 
-      // Check if current tab is available
-      const isCurrentTabAvailable =
-        (activeTab === "content" && hasSubfolders) ||
-        (activeTab === "notes" && hasNotes) ||
-        (activeTab === "flashcards" && hasFlashcards);
+      // Try to get the saved tab for this folder
+      const savedTab = getFolderTab(selectedFolderId);
 
-      // If current tab is not available, switch to an available one
-      if (!isCurrentTabAvailable) {
+      // Check if saved tab is available
+      const isSavedTabAvailable =
+        (savedTab === "content" && hasSubfolders) ||
+        (savedTab === "notes" && hasNotes) ||
+        (savedTab === "flashcards" && hasFlashcards);
+
+      if (isSavedTabAvailable) {
+        setActiveTab(savedTab);
+      } else {
+        // If saved tab is not available, switch to an available one
         if (hasSubfolders) {
           setActiveTab("content");
         } else if (hasNotes) {
@@ -97,7 +105,14 @@ const MainContent = () => {
         }
       }
     }
-  }, [selectedFolderId, activeTab, folders]);
+  }, [selectedFolderId, folders, getFolderTab]);
+
+  // Save active tab when it changes
+  useEffect(() => {
+    if (selectedFolderId) {
+      setFolderTab(selectedFolderId, activeTab);
+    }
+  }, [activeTab, selectedFolderId, setFolderTab]);
 
   // Focus the contentEditable div when editingNote becomes true
   useEffect(() => {

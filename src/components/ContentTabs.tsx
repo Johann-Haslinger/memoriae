@@ -102,7 +102,7 @@ const ContentTabs: React.FC<ContentTabsProps> = ({
   };
 
   return (
-    <div className="w-full mt-6 mb-6">
+    <div className="w-full mt-6 mb-6 select-none">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           {hiddenTabs.length > 0 && (

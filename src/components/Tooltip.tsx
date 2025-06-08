@@ -44,7 +44,7 @@ const Tooltip = ({
           zIndex: 9999,
         }}
       >
-        <div className="flex flex-col items-center">
+        <div className="flex select-none flex-col items-center">
           <p className="font-medium">{content}</p>
           <div className="flex space-x-1 items-center opacity-60">
             {shortcut}
