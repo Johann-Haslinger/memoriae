@@ -1,5 +1,6 @@
 export interface Folder {
   id: string;
+  userId: string;
   name: string;
   type: "subject" | "folder";
   parentId?: string;

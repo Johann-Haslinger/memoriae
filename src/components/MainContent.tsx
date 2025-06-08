@@ -3,13 +3,14 @@ import type { Folder } from "../interfaces";
 import { useFlashcardStore } from "../store/flashcardStore";
 import { useFolderStore } from "../store/folderStore";
 import { useFolderTabStore } from "../store/folderTabStore";
+import AddFolderButton from "./AddFolderButton";
 import Breadcrumb from "./Breadcrumb";
 import ContentTabs from "./ContentTabs";
 import FolderCoverImage from "./FolderCoverImage";
+import FolderGrid from "./FolderGrid";
 import FolderIconPicker from "./FolderIconPicker";
 import type { TabType } from "./TabBar";
 import TabContent from "./TabContent";
-import Tooltip from "./Tooltip";
 
 const MainContent = () => {
   const selectedFolderId = useFolderStore((state) => state.selectedFolderId);
@@ -18,6 +19,7 @@ const MainContent = () => {
   const setSelectedFolderId = useFolderStore(
     (state) => state.setSelectedFolderId
   );
+  const fetchFolders = useFolderStore((state) => state.fetchFolders);
   const selectedFolder = folders.find((f) => f.id === selectedFolderId);
   const [editingNote, setEditingNote] = useState(false);
   const [noteValue, setNoteValue] = useState(selectedFolder?.note || "");
@@ -41,6 +43,11 @@ const MainContent = () => {
     "💡",
   ];
   const [showIconPicker, setShowIconPicker] = useState(false);
+
+  // Fetch folders when component mounts and when selectedFolderId changes
+  useEffect(() => {
+    fetchFolders();
+  }, [selectedFolderId, fetchFolders]);
 
   // Helper: Build breadcrumb path from root to selected folder
   const getFolderPath = (
@@ -189,15 +196,18 @@ const MainContent = () => {
             </div>
           </>
         ) : (
-          <div className="max-w-4xl mx-auto">
-            <Tooltip
-              id="select-folder-tooltip"
-              content="Select a folder to view its details"
-            >
-              <h1 className="text-2xl font-bold mb-4">
-                Select a folder to view its details
+          <div className="max-w-4xl mx-auto px-8">
+            <div className="flex items-center justify-between mb-8">
+              <h1 className="text-4xl pt-20 font-bold text-[#FFFFFFCF]">
+                Home
               </h1>
-            </Tooltip>
+              <AddFolderButton
+                parentId={null}
+                activeTab="content"
+                type="subject"
+              />
+            </div>
+            <FolderGrid parentId={null} />
           </div>
         )}
       </div>

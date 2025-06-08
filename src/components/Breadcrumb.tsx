@@ -4,7 +4,7 @@ import { useSidebarStore } from "../store/sidebarStore";
 
 interface BreadcrumbProps {
   breadcrumbPath: Folder[];
-  setSelectedFolderId: (id: string) => void;
+  setSelectedFolderId: (id: string | null) => void;
 }
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
@@ -13,7 +13,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const isSidebarOpen = useSidebarStore((state) => state.isOpen);
 
-  if (breadcrumbPath.length <= 1) return <div className="h-14" />;
   return (
     <nav
       className={`w-full transition-all duration-300 ease-in-out px-4 h-14 pt-0.5 text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1 select-none ${
@@ -21,6 +20,14 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       }`}
       aria-label="Breadcrumb"
     >
+      <button
+        className="flex items-center gap-1 focus:outline-none px-1 rounded-md transition-colors hover:bg-white/5"
+        onClick={() => setSelectedFolderId(null)}
+      >
+        <span className="text-base mr-1">🏠</span>
+        Home
+      </button>
+      {breadcrumbPath.length > 0 && <span className="opacity-50 mr-2">/</span>}
       {breadcrumbPath.map((folder, idx) => {
         const isCurrent = idx === breadcrumbPath.length - 1;
         const opacityClass = isCurrent ? "opacity-80" : "opacity-80";

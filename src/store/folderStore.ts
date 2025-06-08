@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Folder } from "../interfaces";
 import { supabase } from "../lib/supabase";
+import { toCamelCase, toSnakeCase } from "../utils";
 
 interface FolderState {
   folders: Folder[];
@@ -13,10 +14,12 @@ interface FolderState {
   fetchFolders: () => Promise<void>;
 }
 
-export const useFolderStore = create<FolderState>((set) => ({
+export const useFolderStore = create<FolderState>((set, get) => ({
   folders: [],
   addFolder: async (folder) => {
-    const { error } = await supabase.from("folders").insert([folder]);
+    const { error } = await supabase
+      .from("folders")
+      .insert([toSnakeCase(folder)]);
 
     if (error) {
       console.error("Error adding folder:", error);
@@ -42,7 +45,7 @@ export const useFolderStore = create<FolderState>((set) => ({
   updateFolder: async (id, updatedFields) => {
     const { error } = await supabase
       .from("folders")
-      .update(updatedFields)
+      .update(toSnakeCase(updatedFields))
       .eq("id", id);
 
     if (error) {
@@ -60,6 +63,26 @@ export const useFolderStore = create<FolderState>((set) => ({
   selectedFolderId: null,
   setSelectedFolderId: (id) => set(() => ({ selectedFolderId: id })),
   fetchFolders: async () => {
+    const selectedFolderId = get().selectedFolderId;
+
+    // If no folder is selected, fetch only subjects
+    if (!selectedFolderId) {
+      const { data, error } = await supabase
+        .from("folders")
+        .select("*")
+        .eq("type", "subject")
+        .order("name");
+
+      if (error) {
+        console.error("Error fetching folders:", error);
+        throw error;
+      }
+
+      set(() => ({ folders: (data || []).map(toCamelCase) as Folder[] }));
+      return;
+    }
+
+    // If a folder is selected, fetch all folders
     const { data, error } = await supabase
       .from("folders")
       .select("*")
@@ -70,6 +93,6 @@ export const useFolderStore = create<FolderState>((set) => ({
       throw error;
     }
 
-    set(() => ({ folders: data || [] }));
+    set(() => ({ folders: (data || []).map(toCamelCase) as Folder[] }));
   },
 }));

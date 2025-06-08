@@ -22,7 +22,9 @@ const FolderGrid: React.FC<FolderGridProps> = ({ parentId }) => {
   );
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const childFolders = folders.filter((folder) => folder.parentId === parentId);
+  const childFolders = folders.filter((folder) =>
+    !parentId ? !folder.parentId : folder.parentId === parentId
+  );
 
   // Handle click outside for menu
   useEffect(() => {

@@ -4,14 +4,20 @@ import ChatWindow from "./components/ChatWindow";
 import CommandMenu from "./components/CommandMenu";
 import MainContent from "./components/MainContent";
 import Sidebar from "./components/Sidebar";
+import { useFolderStore } from "./store";
 import { useAuthStore } from "./store/authStore";
 
 const App = () => {
   const { user, isLoading, initialize } = useAuthStore();
+  const fetchFolders = useFolderStore((state) => state.fetchFolders);
 
   useEffect(() => {
     initialize();
   }, [initialize]);
+
+  useEffect(() => {
+    fetchFolders();
+  }, [fetchFolders]);
 
   if (isLoading) {
     return (
@@ -24,6 +30,8 @@ const App = () => {
   if (!user) {
     return <AuthView />;
   }
+
+  // Fetch folders when component mounts and when selectedFolderId changes
 
   return (
     <div className="flex h-screen">

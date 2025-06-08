@@ -1,10 +1,13 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import type { Folder } from "../interfaces";
+import { useAuthStore } from "../store/authStore";
 import { useFolderStore } from "../store/folderStore";
 import { Button } from "./Button";
 
 interface AddFolderButtonProps {
+  type: "folder" | "subject";
   parentId: string | null;
   activeTab: "notes" | "flashcards" | "quizzes" | "content";
 }
@@ -12,17 +15,20 @@ interface AddFolderButtonProps {
 const AddFolderButton: React.FC<AddFolderButtonProps> = ({
   parentId,
   activeTab,
+  type = "folder",
 }) => {
   const addFolder = useFolderStore((state) => state.addFolder);
   const [isAddingFolder, setIsAddingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
+  const userId = useAuthStore((state) => state.user?.id);
 
   const handleAddFolder = () => {
     if (newFolderName.trim()) {
       const newFolder: Folder = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: uuidv4(),
+        userId: userId || "",
         name: newFolderName.trim(),
-        type: "folder",
+        type,
         parentId: parentId || undefined,
         icon: "📁",
         lastEditedAt: new Date().toISOString(),
