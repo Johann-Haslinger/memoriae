@@ -1,10 +1,10 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import type { Folder } from "../interfaces";
-import { useAuthStore } from "../store/authStore";
-import { useFolderStore } from "../store/folderStore";
-import { Button } from "./Button";
+import type { Folder } from "../../interfaces";
+import { useAuthStore } from "../../store/authStore";
+import { useFolderStore } from "../../store/folderStore";
+import { Button } from "../Button";
 
 interface AddFolderButtonProps {
   type: "folder" | "subject";

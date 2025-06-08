@@ -1,10 +1,10 @@
 import { Bot, Brain, FileText, Folder, Play, Plus } from "lucide-react";
 import React, { useState } from "react";
-import { useFlashcardStore } from "../store/flashcardStore";
-import { useFolderStore } from "../store/folderStore";
-import type { Tab, TabType } from "../types/tabs";
+import { useFlashcardStore } from "../../store/flashcardStore";
+import { useFolderStore } from "../../store/folderStore";
+import type { Tab, TabType } from "../../types/tabs";
+import { Button } from "../Button";
 import AddFolderButton from "./AddFolderButton";
-import { Button } from "./Button";
 import FlashcardReview from "./FlashcardReview";
 import TabContextMenu from "./TabContextMenu";
 
@@ -45,21 +45,22 @@ const ContentTabs: React.FC<ContentTabsProps> = ({
     {
       id: "content" as TabType,
       label: "Content",
-      show: hasSubfolders,
+      show: hasSubfolders || activeTab === "content",
       icon: Folder,
       iconColor: "text-[#27ae60]/80",
     },
     {
       id: "notes" as TabType,
-      label: "Notes",
-      show: hasNotes,
+      label: "Note",
+      show:
+        hasNotes || activeTab === "notes" || (!hasSubfolders && !hasFlashcards),
       icon: FileText,
       iconColor: "text-[#2980b9]/80",
     },
     {
       id: "flashcards" as TabType,
       label: "Flashcards",
-      show: hasFlashcards,
+      show: hasFlashcards || activeTab === "flashcards",
       icon: Brain,
       iconColor: "text-[#8e44ad]/80",
     },
@@ -75,14 +76,14 @@ const ContentTabs: React.FC<ContentTabsProps> = ({
   const availableTabs: Tab[] = allTabs.filter((tab) => tab.show);
   const hiddenTabs: Tab[] = allTabs.filter((tab) => !tab.show);
 
-  // If no tabs are available, show at least the content tab
+  // If no tabs are available, show the notes tab by default
   if (availableTabs.length === 0) {
     availableTabs.push({
-      id: "content",
-      label: "Content",
+      id: "notes",
+      label: "Notes",
       show: true,
-      icon: Folder,
-      iconColor: "text-blue-400",
+      icon: FileText,
+      iconColor: "text-[#2980b9]/80",
     });
   }
 
@@ -169,7 +170,11 @@ const ContentTabs: React.FC<ContentTabsProps> = ({
               </Button>
             </div>
           )}
-          <AddFolderButton parentId={selectedFolderId} activeTab={activeTab} />
+          <AddFolderButton
+            parentId={selectedFolderId}
+            activeTab={activeTab}
+            type="folder"
+          />
         </div>
       </div>
       {showContextMenu && (

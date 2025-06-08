@@ -1,15 +1,19 @@
 import { useEffect } from "react";
 import { AuthView } from "./components/AuthView";
-import ChatWindow from "./components/ChatWindow";
+import ChatWindow from "./components/chat/ChatWindow";
 import CommandMenu from "./components/CommandMenu";
-import MainContent from "./components/MainContent";
-import Sidebar from "./components/Sidebar";
+import MainContent from "./components/main-content/MainContent";
+import Sidebar from "./components/sidebar/Sidebar";
+import { useDisableZoom } from "./hooks/useDisableZoom";
 import { useFolderStore } from "./store";
 import { useAuthStore } from "./store/authStore";
 
 const App = () => {
   const { user, isLoading, initialize } = useAuthStore();
   const fetchFolders = useFolderStore((state) => state.fetchFolders);
+
+  // Use the zoom prevention hook
+  useDisableZoom();
 
   useEffect(() => {
     initialize();
@@ -34,7 +38,7 @@ const App = () => {
   // Fetch folders when component mounts and when selectedFolderId changes
 
   return (
-    <div className="flex h-screen">
+    <div className="flex overflow-hidden h-screen">
       <Sidebar />
       <CommandMenu />
       <MainContent />

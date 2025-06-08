@@ -20,9 +20,10 @@ const buttonVariants = cva(
         ],
         secondary: [
           "bg-[#2a2a2a] text-white",
-          "hover:bg-[#333333]",
+          "hover:bg-[#333333] dark:hover:bg-white/10",
           "focus-visible:ring-[#404040] dark:focus-visible:ring-blue-400/80 ",
           "dark:bg-[#1a1a1a]/80 dark:hover:bg-[#1a1a1a] dark:active:bg-[#1a1a1a]/60",
+          "dark:text-[#999999]",
         ],
         ghost: [
           "hover:bg-[#333333]/10 hover:text-[#FFFFFFCF]",

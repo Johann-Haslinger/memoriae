@@ -1,14 +1,10 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
-import type { Folder } from "../interfaces";
-import { useFolderStore } from "../store/folderStore";
-import { Button } from "./Button";
-import Tooltip from "./Tooltip";
+import type { Folder } from "../../interfaces";
+import { useFolderStore } from "../../store/folderStore";
 
 interface NoteSectionProps {
   noteValue: string;
-  editingNote: boolean;
-  setEditingNote: (v: boolean) => void;
   handleInput: (e: React.FormEvent<HTMLDivElement>) => void;
   handleSaveNote: () => void;
   noteDivRef: React.RefObject<HTMLDivElement | null>;
@@ -94,8 +90,6 @@ const CollapsibleNote: React.FC<CollapsibleNoteProps> = ({
 
 const NoteSection: React.FC<NoteSectionProps> = ({
   noteValue,
-  editingNote,
-  setEditingNote,
   handleInput,
   handleSaveNote,
   noteDivRef,
@@ -107,29 +101,17 @@ const NoteSection: React.FC<NoteSectionProps> = ({
 
   return (
     <div className="text-[#FFFFFFCF]">
-      {noteValue || editingNote ? (
-        <div
-          ref={noteDivRef}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleInput}
-          onBlur={handleSaveNote}
-          tabIndex={0}
-          className="outline-none"
-        >
-          {noteValue}
-        </div>
-      ) : (
-        <Tooltip id="add-note-tooltip" content="Add a note to this folder">
-          <Button
-            onClick={() => setEditingNote(true)}
-            variant="default"
-            size="sm"
-          >
-            Add Note
-          </Button>
-        </Tooltip>
-      )}
+      <div
+        ref={noteDivRef}
+        contentEditable
+        suppressContentEditableWarning
+        onInput={handleInput}
+        onBlur={handleSaveNote}
+        tabIndex={0}
+        className="outline-none min-h-[100px]"
+      >
+        {noteValue}
+      </div>
 
       {selectedFolder && subfolders.length > 0 && (
         <div className="mt-8 space-y-6">

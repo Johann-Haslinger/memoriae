@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { VITE_UNSPLASH_ACCESS_KEY } from "../environment";
-import { Button } from "./Button";
-import Tooltip from "./Tooltip";
+import { VITE_UNSPLASH_ACCESS_KEY } from "../../environment";
+import { Button } from "../Button";
+import Tooltip from "../Tooltip";
 
 interface FolderCoverImageProps {
   coverImage?: string;
@@ -84,33 +84,6 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
     }
   }, [showMenu]);
 
-  // Fetch a random Unsplash image
-  const fetchRandomUnsplash = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(
-        `https://api.unsplash.com/photos/random?orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`
-      );
-      const data: UnsplashPhoto = await res.json();
-      if (data && data.urls) {
-        // First set the regular quality
-        onChangeCoverImage(data.urls.regular);
-        // Then load the full quality
-        const fullImg = new Image();
-        fullImg.src = data.urls.full;
-        fullImg.onload = () => {
-          onChangeCoverImage(data.urls.full);
-        };
-      } else {
-        setError("Could not fetch image");
-      }
-    } catch {
-      setError("Could not fetch image");
-    }
-    setLoading(false);
-  };
-
   // Search Unsplash
   const searchUnsplash = async (query: string) => {
     setLoading(true);
@@ -142,27 +115,9 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
     setLoading(false);
   };
 
-  // UI when no cover image
+  // If no cover image, don't render anything
   if (!coverImage) {
-    return (
-      <div className="relative opacity-0 hover:opacity-100 w-full">
-        <div className="w-fit h-12 bg-[#2a2a2a] dark:bg-[#1a1a1a] rounded-xl flex items-center justify-center text-[#666666] dark:text-[#999999]">
-          <Tooltip
-            id="add-cover-tooltip"
-            content="Add a cover image to this folder"
-          >
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={fetchRandomUnsplash}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Add cover image"}
-            </Button>
-          </Tooltip>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // UI when cover image is present
@@ -174,7 +129,6 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
         className="w-full h-32 lg:h-60 xl:h-[16rem] object-cover shadow-sm"
       />
       {/* Overlay button - only visible on hover */}
-
       <Button
         variant="secondary"
         size="sm"
@@ -237,7 +191,6 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                       // Then load the full quality
                       const fullImg = new Image();
                       fullImg.src = img.full;
-                      console.log("img.full", img.full);
                       fullImg.onload = () => {
                         onChangeCoverImage(img.full);
                       };
@@ -273,7 +226,6 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
                       // Then load the full quality
                       const fullImg = new Image();
                       fullImg.src = img.full;
-                      console.log("img.full", img.full);
                       fullImg.onload = () => {
                         onChangeCoverImage(img.full);
                       };
@@ -296,7 +248,7 @@ const FolderCoverImage: React.FC<FolderCoverImageProps> = ({
             size="sm"
             className="w-full text-left text-red-500 mt-2"
             onClick={() => {
-              onChangeCoverImage(undefined);
+              onChangeCoverImage("");
               setShowMenu(false);
             }}
           >

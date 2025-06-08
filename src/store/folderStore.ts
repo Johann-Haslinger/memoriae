@@ -43,6 +43,7 @@ export const useFolderStore = create<FolderState>((set, get) => ({
     }));
   },
   updateFolder: async (id, updatedFields) => {
+    console.log("updatedFields", updatedFields);
     const { error } = await supabase
       .from("folders")
       .update(toSnakeCase(updatedFields))

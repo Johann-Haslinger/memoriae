@@ -1,5 +1,5 @@
 import React from "react";
-import type { Tab, TabType } from "../types/tabs";
+import type { Tab, TabType } from "../../types/tabs";
 
 interface TabContextMenuProps {
   availableTabs: Tab[];
@@ -28,7 +28,7 @@ const TabContextMenu: React.FC<TabContextMenuProps> = ({
 
   return (
     <div
-      className="tab-context-menu fixed z-50 bg-gray-900 rounded-lg shadow-lg border border-gray-800 py-1 min-w-[200px]"
+      className="tab-context-menu mt-1 fixed z-50 bg-[#1a1919] rounded-lg shadow-lg border border-white/10 py-1 min-w-[200px] backdrop-blur-sm"
       style={{
         top: position.y,
         left: position.x,
@@ -41,7 +41,7 @@ const TabContextMenu: React.FC<TabContextMenuProps> = ({
             onSelect(tab.id);
             onClose();
           }}
-          className="w-full px-4 py-2 text-left text-sm text-white/70 hover:text-white hover:bg-white/10 flex items-center gap-2"
+          className="w-full px-3 py-2 text-left text-sm text-white/70 hover:text-white hover:bg-white/5 flex items-center gap-2 transition-colors"
         >
           <tab.icon className={`size-4 ${tab.iconColor}`} />
           {tab.label}

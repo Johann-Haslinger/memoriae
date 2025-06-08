@@ -1,6 +1,6 @@
 import React from "react";
-import type { Folder } from "../interfaces";
-import { useSidebarStore } from "../store/sidebarStore";
+import type { Folder } from "../../interfaces";
+import { useSidebarStore } from "../../store/sidebarStore";
 
 interface BreadcrumbProps {
   breadcrumbPath: Folder[];

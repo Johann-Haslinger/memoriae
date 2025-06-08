@@ -1,7 +1,7 @@
 import { MoreVertical } from "lucide-react";
 import React, { useMemo, useState } from "react";
-import { useFlashcardStore } from "../store/flashcardStore";
-import { Button } from "./Button";
+import { useFlashcardStore } from "../../store/flashcardStore";
+import { Button } from "../Button";
 
 interface FlashcardsProps {
   selectedFolderId: string;

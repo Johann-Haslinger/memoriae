@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import React, { useState } from "react";
-import type { Flashcard } from "../interfaces/flashcard";
-import { Button } from "./Button";
+import type { Flashcard } from "../../interfaces/flashcard";
+import { Button } from "../Button";
 
 interface FlashcardReviewProps {
   flashcards: Flashcard[];
